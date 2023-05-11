@@ -14,7 +14,7 @@ public final class ValuePatternMatcher<T> extends SingleElementPatternMatcher {
     }
 
     @Override
-    protected boolean matches(ParseElement<?> element) {
+    protected boolean matches(ParseElement element) {
         return Objects.equals(element.value(), value);
     }
 

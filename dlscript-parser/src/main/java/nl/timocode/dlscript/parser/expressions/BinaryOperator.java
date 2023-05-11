@@ -47,7 +47,7 @@ public class BinaryOperator<L, R> {
         }
 
         @Override
-        public U create(List<ParseElement<?>> elements) {
+        public U create(List<ParseElement> elements) {
             assert elements.size() == 3;
             //noinspection unchecked
             return create((L) elements.get(0).value(), (R) elements.get(2).value());

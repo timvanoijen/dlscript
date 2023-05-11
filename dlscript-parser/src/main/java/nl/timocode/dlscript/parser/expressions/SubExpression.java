@@ -34,7 +34,7 @@ public class SubExpression implements Expression {
         }
 
         @Override
-        public SubExpression create(List<ParseElement<?>> elements) {
+        public SubExpression create(List<ParseElement> elements) {
             assert elements.size() == 3;
             return new SubExpression((Expression)elements.get(1).value());
         }

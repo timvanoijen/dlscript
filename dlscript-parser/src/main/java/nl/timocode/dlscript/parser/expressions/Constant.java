@@ -29,7 +29,7 @@ public class Constant implements Expression {
         }
 
         @Override
-        public Constant create(List<ParseElement<?>> elements) {
+        public Constant create(List<ParseElement> elements) {
             assert elements.size() == 1;
             return new Constant(((Number)elements.get(0).value()).doubleValue());
         }

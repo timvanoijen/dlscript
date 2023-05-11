@@ -27,7 +27,7 @@ class SequencePatternMatcherTest {
     void singleMatch(int el1, int el2, int el3, int el4, MatchType type, int startElement, int endElement) {
         // GIVEN
         SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 3);
-        List<? extends ParseElement<?>> elements = createParseElements(el1, el2, el3, el4);
+        List<? extends ParseElement> elements = createParseElements(el1, el2, el3, el4);
 
         // WHEN
         List<PatternMatch> matches = cut.matches(elements);
@@ -50,7 +50,7 @@ class SequencePatternMatcherTest {
     void noMatch(int el1, int el2, int el3, int el4) {
         // GIVEN
         SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 3);
-        List<? extends ParseElement<?>> elements = createParseElements(el1, el2, el3, el4);
+        List<? extends ParseElement> elements = createParseElements(el1, el2, el3, el4);
 
         // WHEN
         List<PatternMatch> matches = cut.matches(elements);
@@ -63,7 +63,7 @@ class SequencePatternMatcherTest {
     void multipleMatches() {
         // GIVEN
         SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 1);
-        List<? extends ParseElement<?>> elements = createParseElements(0, 1, 2, 1, 2, 1);
+        List<? extends ParseElement> elements = createParseElements(0, 1, 2, 1, 2, 1);
 
         // WHEN
         List<PatternMatch> matches = cut.matches(elements);
@@ -83,11 +83,11 @@ class SequencePatternMatcherTest {
         return SequencePatternMatcher.of(matchers.toArray(new ValuePatternMatcher[0]));
     }
 
-    private List<? extends ParseElement<?>> createParseElements(Integer... input) {
+    private List<? extends ParseElement> createParseElements(Integer... input) {
         List<Integer> inputList = Arrays.asList(input);
 
         return inputList.stream()
-                .map(n -> new ParseElement<>(n, Integer.class))
+                .map(n -> new ParseElement(n, Integer.class))
                 .toList();
     }
 }

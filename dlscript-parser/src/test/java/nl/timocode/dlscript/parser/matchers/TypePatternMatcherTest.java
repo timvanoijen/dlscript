@@ -15,11 +15,11 @@ class TypePatternMatcherTest {
     void matchesSameType() {
         // GIVEN
         TypePatternMatcher cut = new TypePatternMatcher(Integer.class);
-        List<ParseElement<?>> elements = Arrays.asList(
-                new ParseElement<>(1L, Long.class),
-                new ParseElement<>(2, Integer.class),
-                new ParseElement<>(3L, Long.class),
-                new ParseElement<>(4, Integer.class)
+        List<ParseElement> elements = Arrays.asList(
+                new ParseElement(1L, Long.class),
+                new ParseElement(2, Integer.class),
+                new ParseElement(3L, Long.class),
+                new ParseElement(4, Integer.class)
         );
 
         // WHEN
@@ -35,9 +35,9 @@ class TypePatternMatcherTest {
     void matchesSubType() {
         // GIVEN
         TypePatternMatcher cut = new TypePatternMatcher(Number.class);
-        List<ParseElement<?>> elements = Arrays.asList(
-                new ParseElement<>(1L, Long.class),
-                new ParseElement<>("x", String.class)
+        List<ParseElement> elements = Arrays.asList(
+                new ParseElement(1L, Long.class),
+                new ParseElement("x", String.class)
         );
 
         // WHEN

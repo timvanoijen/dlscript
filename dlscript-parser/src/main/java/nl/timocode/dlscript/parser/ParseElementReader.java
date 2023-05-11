@@ -16,7 +16,7 @@ public final class ParseElementReader {
         this.reader = reader;
     }
 
-    public Optional<ParseElement<?>> read() throws IOException {
+    public Optional<ParseElement> read() throws IOException {
 
         ensureInitialized();
         StringBuilder s = new StringBuilder();
@@ -35,7 +35,7 @@ public final class ParseElementReader {
                 }
                 break;
             } else {
-                // Letter of digit: return as string or long per group
+                // Letter or digit: return as string or long per group
                 boolean isAlpha = !Character.isDigit(currentChar);
                 if (Objects.equals(isAlpha, isDigit)) {
                     break;
@@ -48,8 +48,8 @@ public final class ParseElementReader {
         return isDigit == null
                 ? Optional.empty()
                 : Optional.of(isDigit
-                    ? new ParseElement<>(Long.parseLong(s.toString()), Long.class)
-                    : new ParseElement<>(s.toString(), String.class));
+                    ? new ParseElement(Long.parseLong(s.toString()), Long.class)
+                    : new ParseElement(s.toString(), String.class));
     }
 
     public boolean hasNext() throws IOException {

@@ -8,7 +8,7 @@ public interface Parsable<T> {
 
     PatternMatcher patternMatcher();
 
-    T create(List<ParseElement<?>> elements);
+    T create(List<ParseElement> elements);
 
     default int parsePriority() {
         return Integer.MAX_VALUE;

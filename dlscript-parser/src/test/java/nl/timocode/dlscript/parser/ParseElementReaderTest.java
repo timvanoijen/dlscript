@@ -21,33 +21,33 @@ class ParseElementReaderTest {
         ParseElementReader cut = new ParseElementReader(new StringReader(input));
 
         // WHEN
-        List<? extends ParseElement<?>> elements = Stream.generate(() -> readWithoutCheckedException(cut))
-                .takeWhile(Optional::isPresent).map(o -> o.orElseGet(null)).toList();
+        List<? extends ParseElement> elements = Stream.generate(() -> readWithoutCheckedException(cut))
+                .takeWhile(Optional::isPresent).map(o -> o.orElse(null)).toList();
 
         // THEN
         assertEquals(List.of(
-                new ParseElement<>(12L, Long.class),
-                new ParseElement<>(".", String.class),
-                new ParseElement<>(34L, Long.class),
-                new ParseElement<>("ab", String.class),
-                new ParseElement<>("cd", String.class),
-                new ParseElement<>(56L, Long.class),
-                new ParseElement<>(89L, Long.class),
-                new ParseElement<>("#", String.class),
-                new ParseElement<>("{", String.class),
-                new ParseElement<>("ef", String.class),
-                new ParseElement<>("gh", String.class),
-                new ParseElement<>("!", String.class),
-                new ParseElement<>("@", String.class),
-                new ParseElement<>(0L, Long.class),
-                new ParseElement<>(123456789L, Long.class),
-                new ParseElement<>("(", String.class),
-                new ParseElement<>(")", String.class),
-                new ParseElement<>("+", String.class),
-                new ParseElement<>("-", String.class),
-                new ParseElement<>("*", String.class),
-                new ParseElement<>("/", String.class),
-                new ParseElement<>("^", String.class)
+                new ParseElement(12L, Long.class),
+                new ParseElement(".", String.class),
+                new ParseElement(34L, Long.class),
+                new ParseElement("ab", String.class),
+                new ParseElement("cd", String.class),
+                new ParseElement(56L, Long.class),
+                new ParseElement(89L, Long.class),
+                new ParseElement("#", String.class),
+                new ParseElement("{", String.class),
+                new ParseElement("ef", String.class),
+                new ParseElement("gh", String.class),
+                new ParseElement("!", String.class),
+                new ParseElement("@", String.class),
+                new ParseElement(0L, Long.class),
+                new ParseElement(123456789L, Long.class),
+                new ParseElement("(", String.class),
+                new ParseElement(")", String.class),
+                new ParseElement("+", String.class),
+                new ParseElement("-", String.class),
+                new ParseElement("*", String.class),
+                new ParseElement("/", String.class),
+                new ParseElement("^", String.class)
         ), elements);
     }
 
@@ -62,12 +62,12 @@ class ParseElementReaderTest {
         cut.reset();
 
         // THEN
-        assertEquals(Optional.of(new ParseElement<>(12L, Long.class)), cut.read());
-        assertEquals(Optional.of(new ParseElement<>("ab", String.class)), cut.read());
+        assertEquals(Optional.of(new ParseElement(12L, Long.class)), cut.read());
+        assertEquals(Optional.of(new ParseElement("ab", String.class)), cut.read());
         assertEquals(Optional.empty(), cut.read());
     }
 
-    private Optional<ParseElement<?>> readWithoutCheckedException(ParseElementReader reader) {
+    private Optional<ParseElement> readWithoutCheckedException(ParseElementReader reader) {
         try {
             return reader.read();
         } catch (IOException e) {

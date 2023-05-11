@@ -15,10 +15,10 @@ class ValuePatternMatcherTest {
     void matches() {
         // GIVEN
         ValuePatternMatcher<Integer> cut = new ValuePatternMatcher<>(3);
-        List<ParseElement<?>> elements = Arrays.asList(
-                new ParseElement<>(3L, Long.class),
-                new ParseElement<>(2, Integer.class),
-                new ParseElement<>(3, Integer.class)
+        List<ParseElement> elements = Arrays.asList(
+                new ParseElement(3L, Long.class),
+                new ParseElement(2, Integer.class),
+                new ParseElement(3, Integer.class)
         );
 
         // WHEN

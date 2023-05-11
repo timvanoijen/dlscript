@@ -21,7 +21,7 @@ public final class SequencePatternMatcher implements PatternMatcher {
     }
 
     @Override
-    public List<PatternMatch> matches(List<? extends ParseElement<?>> elements) {
+    public List<PatternMatch> matches(List<? extends ParseElement> elements) {
         List<PatternMatch> matches = new ArrayList<>();
         for(int i = 0; i < elements.size(); i++) {
             boolean allMatch = true;

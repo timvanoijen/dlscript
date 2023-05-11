@@ -44,10 +44,10 @@ class MultiplicationTest {
     void typeCreate() {
         // GIVEN
         Multiplication.Type cut = new Multiplication.Type();
-        List<ParseElement<?>> elements = List.of(
-                new ParseElement<>(new Constant(5), Constant.class),
-                new ParseElement<>("*", String.class),
-                new ParseElement<>(new Constant(6), Constant.class));
+        List<ParseElement> elements = List.of(
+                new ParseElement(new Constant(5), Constant.class),
+                new ParseElement("*", String.class),
+                new ParseElement(new Constant(6), Constant.class));
 
         // WHEN
         Multiplication multiplication = cut.create(elements);

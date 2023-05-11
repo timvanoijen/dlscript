@@ -14,7 +14,7 @@ public final class TypePatternMatcher extends SingleElementPatternMatcher {
     }
 
     @Override
-    protected boolean matches(ParseElement<?> element) {
+    protected boolean matches(ParseElement element) {
         return type.isAssignableFrom(element.type());
     }
 
