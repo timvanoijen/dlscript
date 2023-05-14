@@ -1,19 +1,17 @@
 package nl.timocode.dlscript.parser.matchers;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import nl.timocode.dlscript.parser.Element;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+@AllArgsConstructor
+@EqualsAndHashCode
 public final class SequencePatternMatcher implements PatternMatcher {
 
     private final List<SingleElementPatternMatcher> matchers;
-
-    private SequencePatternMatcher(List<SingleElementPatternMatcher> matchers) {
-        Objects.requireNonNull(matchers);
-        this.matchers = matchers;
-    }
 
     public static SequencePatternMatcher of(SingleElementPatternMatcher... matcher) {
         return new SequencePatternMatcher(List.of(matcher));
@@ -38,18 +36,5 @@ public final class SequencePatternMatcher implements PatternMatcher {
             }
         }
         return matches;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SequencePatternMatcher that = (SequencePatternMatcher) o;
-        return matchers.equals(that.matchers);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(matchers);
     }
 }

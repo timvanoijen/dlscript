@@ -1,5 +1,6 @@
 package nl.timocode.dlscript.parser.primitives;
 
+import lombok.AllArgsConstructor;
 import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.expressions.Expression;
@@ -7,13 +8,10 @@ import nl.timocode.dlscript.parser.matchers.*;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class DoubleElement implements Expression {
 
     private final double value;
-
-    public DoubleElement(double value) {
-        this.value = value;
-    }
 
     public double eval() {
         return value;

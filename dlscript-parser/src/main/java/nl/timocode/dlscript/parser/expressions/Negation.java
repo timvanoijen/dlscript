@@ -1,5 +1,6 @@
 package nl.timocode.dlscript.parser.expressions;
 
+import lombok.AllArgsConstructor;
 import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
@@ -10,13 +11,10 @@ import nl.timocode.dlscript.parser.primitives.StringElement;
 
 import java.util.List;
 
+@AllArgsConstructor
 public class Negation implements Expression {
 
     private final Expression expression;
-
-    public Negation(Expression expression) {
-        this.expression = expression;
-    }
 
     @Override
     public double eval() {

@@ -1,5 +1,8 @@
 package nl.timocode.dlscript.parser.expressions;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
@@ -9,39 +12,13 @@ import nl.timocode.dlscript.parser.matchers.ValuePatternMatcher;
 import nl.timocode.dlscript.parser.primitives.StringElement;
 
 import java.util.List;
-import java.util.Objects;
 
+@Getter
+@AllArgsConstructor
+@EqualsAndHashCode
 public class BinaryOperator<L, R> implements Element {
     private final L left;
     private final R right;
-
-    public BinaryOperator(L left, R right) {
-        Objects.requireNonNull(left);
-        Objects.requireNonNull(right);
-        this.left = left;
-        this.right = right;
-    }
-
-    public L getLeft() {
-        return left;
-    }
-
-    public R getRight() {
-        return right;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BinaryOperator<?, ?> that = (BinaryOperator<?, ?>) o;
-        return left.equals(that.left) && right.equals(that.right);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(left, right);
-    }
 
     public abstract static class Type<L, R, U extends BinaryOperator<L, R>> implements Parsable<U> {
 
