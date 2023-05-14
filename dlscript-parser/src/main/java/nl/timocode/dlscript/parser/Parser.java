@@ -45,16 +45,15 @@ public final class Parser {
             while(true) {
                 List<Element> finalStack = stack;
 
-                // Find types that match a pattern in the stack
+                // Find types that match a pattern in the stack and sort on highest end element and then on lowest
+                // start element
                 List<? extends TypeWithMatch<?>> matches = ELEMENT_TYPES.stream()
                         .flatMap(type ->
                                 type.patternMatcher().matches(finalStack).stream()
                                         .map(match -> new TypeWithMatch<>(type, match)))
+                        .sorted(Comparator.<TypeWithMatch<?>>comparingInt(twm -> -twm.match().endElement())
+                                .thenComparing(twm -> twm.match().startElement()))
                         .collect(Collectors.toCollection(ArrayList::new));
-
-                // Order matches on highest end element and then on lowest start element
-                matches.sort(Comparator.<TypeWithMatch<?>>comparingInt(twm -> -twm.match().endElement())
-                        .thenComparing(twm -> twm.match().startElement()));
 
                 // Find first full match
                 OptionalInt firstFullMatchIdxOpt = IntStream.range(0, matches.size())
