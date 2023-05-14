@@ -17,7 +17,7 @@ public final class SequencePatternMatcher implements PatternMatcher {
     }
 
     public static SequencePatternMatcher of(SingleElementPatternMatcher... matcher) {
-        return new SequencePatternMatcher(Arrays.asList(matcher));
+        return new SequencePatternMatcher(List.of(matcher));
     }
 
     @Override

@@ -1,10 +1,10 @@
 package nl.timocode.dlscript.parser;
 
-import nl.timocode.dlscript.parser.expressions.Constant;
-import nl.timocode.dlscript.parser.expressions.Multiplication;
-import nl.timocode.dlscript.parser.expressions.SubExpression;
-import nl.timocode.dlscript.parser.expressions.Sum;
+import nl.timocode.dlscript.parser.expressions.*;
+import nl.timocode.dlscript.parser.primitives.DoubleElement;
 import nl.timocode.dlscript.parser.matchers.PatternMatch;
+import nl.timocode.dlscript.parser.primitives.LongElement;
+import nl.timocode.dlscript.parser.primitives.StringElement;
 
 
 import java.io.IOException;
@@ -19,10 +19,15 @@ public final class Parser {
     record TypeWithMatch<T>(Parsable<T> type, PatternMatch match) {}
 
     private static final List<? extends Parsable<?>> ELEMENT_TYPES = List.of(
-            new Constant.Type(),
+            new LongElement.Type(),
+            new StringElement.Type(),
+            new DoubleElement.Type(),
             new SubExpression.Type(),
             new Sum.Type(),
-            new Multiplication.Type()
+            new Subtraction.Type(),
+            new Multiplication.Type(),
+            new Division.Type(),
+            new Negation.Type()
     );
 
     public Object parse(Reader reader) throws IOException {
@@ -41,14 +46,14 @@ public final class Parser {
                 List<ParseElement> finalStack = stack;
 
                 // Find types that match a pattern in the stack
-                List<TypeWithMatch> matches = ELEMENT_TYPES.stream()
+                List<? extends TypeWithMatch<?>> matches = ELEMENT_TYPES.stream()
                         .flatMap(type ->
                                 type.patternMatcher().matches(finalStack).stream()
-                                        .map(match -> new TypeWithMatch(type, match)))
+                                        .map(match -> new TypeWithMatch<>(type, match)))
                         .collect(Collectors.toCollection(ArrayList::new));
 
                 // Order matches on highest end element and then on lowest start element
-                matches.sort(Comparator.<TypeWithMatch>comparingInt(twm -> -twm.match().endElement())
+                matches.sort(Comparator.<TypeWithMatch<?>>comparingInt(twm -> -twm.match().endElement())
                         .thenComparing(twm -> twm.match().startElement()));
 
                 // Find first full match
@@ -59,7 +64,7 @@ public final class Parser {
                 }
 
                 int firstFullMatchIdx = firstFullMatchIdxOpt.getAsInt();
-                TypeWithMatch selected = matches.get(firstFullMatchIdx);
+                TypeWithMatch<?> selected = matches.get(firstFullMatchIdx);
 
                 // Find out if there is a partial match with a higher priority
                 boolean potentialBetterCandidate = elementReader.hasNext() &&
@@ -88,7 +93,7 @@ public final class Parser {
         return stack.get(0).value();
     }
 
-    private ParseElement createParseElementFromTypeWithMatch(TypeWithMatch<Object> typeWithMatch,
+    private ParseElement createParseElementFromTypeWithMatch(TypeWithMatch<?> typeWithMatch,
                                                                     List<ParseElement> stack) {
         Object element = typeWithMatch.type().create(stack.subList(
                 typeWithMatch.match().startElement(), typeWithMatch.match().endElement()));

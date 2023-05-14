@@ -5,6 +5,7 @@ import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 import nl.timocode.dlscript.parser.matchers.SequencePatternMatcher;
 import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
 import nl.timocode.dlscript.parser.matchers.ValuePatternMatcher;
+import nl.timocode.dlscript.parser.primitives.DoubleElement;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,7 +17,7 @@ class MultiplicationTest {
     @Test
     void eval() {
         // GIVEN
-        Multiplication cut = new Multiplication(new Constant(3), new Constant(4));
+        Multiplication cut = new Multiplication(new DoubleElement(3), new DoubleElement(4));
 
         // WHEN
         double result = cut.eval();
@@ -45,9 +46,9 @@ class MultiplicationTest {
         // GIVEN
         Multiplication.Type cut = new Multiplication.Type();
         List<ParseElement> elements = List.of(
-                new ParseElement(new Constant(5), Constant.class),
+                new ParseElement(new DoubleElement(5), DoubleElement.class),
                 new ParseElement("*", String.class),
-                new ParseElement(new Constant(6), Constant.class));
+                new ParseElement(new DoubleElement(6), DoubleElement.class));
 
         // WHEN
         Multiplication multiplication = cut.create(elements);

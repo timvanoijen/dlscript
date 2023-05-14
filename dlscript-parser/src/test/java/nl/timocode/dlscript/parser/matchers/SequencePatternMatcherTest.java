@@ -37,7 +37,7 @@ class SequencePatternMatcherTest {
                 ? PatternMatch.fullMatch(startElement, endElement)
                 : PatternMatch.partialMatch(startElement);
 
-        assertEquals(Collections.singletonList(expected), matches);
+        assertEquals(List.of(expected), matches);
     }
 
     @ParameterizedTest
@@ -73,7 +73,7 @@ class SequencePatternMatcherTest {
         PatternMatch expected2 = PatternMatch.fullMatch(3, 6);
         PatternMatch expected3 = PatternMatch.partialMatch(5);
 
-        assertEquals(Arrays.asList(expected1, expected2, expected3), matches);
+        assertEquals(List.of(expected1, expected2, expected3), matches);
     }
 
     private SequencePatternMatcher createSequencePatternMatcher(Integer... input) {
@@ -84,7 +84,7 @@ class SequencePatternMatcherTest {
     }
 
     private List<? extends ParseElement> createParseElements(Integer... input) {
-        List<Integer> inputList = Arrays.asList(input);
+        List<Integer> inputList = List.of(input);
 
         return inputList.stream()
                 .map(n -> new ParseElement(n, Integer.class))

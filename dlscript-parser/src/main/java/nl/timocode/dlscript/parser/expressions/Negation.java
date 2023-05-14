@@ -10,34 +10,33 @@ import nl.timocode.dlscript.parser.primitives.StringElement;
 
 import java.util.List;
 
-public class SubExpression implements Expression {
+public class Negation implements Expression {
 
     private final Expression expression;
 
-    public SubExpression(Expression expression) {
+    public Negation(Expression expression) {
         this.expression = expression;
     }
 
+    @Override
     public double eval() {
-        return expression.eval();
+        return -(expression.eval());
     }
 
-    public static class Type implements Parsable<SubExpression> {
-
-        private static final PatternMatcher PATTERNMATCHER = SequencePatternMatcher.of(
-                new ValuePatternMatcher<>(new StringElement("(")),
-                new TypePatternMatcher(Expression.class),
-                new ValuePatternMatcher<>(new StringElement(")")));
+    public static class Type implements Parsable<Negation> {
 
         @Override
         public PatternMatcher patternMatcher() {
-            return PATTERNMATCHER;
+            return SequencePatternMatcher.of(
+                    new ValuePatternMatcher<>(new StringElement("-")),
+                    new TypePatternMatcher(Expression.class)
+            );
         }
 
         @Override
-        public SubExpression create(List<ParseElement> elements) {
-            assert elements.size() == 3;
-            return new SubExpression((Expression)elements.get(1).value());
+        public Negation create(List<ParseElement> elements) {
+            assert elements.size() == 2;
+            return new Negation((Expression) elements.get(1).value());
         }
     }
 }

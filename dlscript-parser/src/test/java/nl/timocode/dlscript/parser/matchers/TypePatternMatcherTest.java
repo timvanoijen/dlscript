@@ -3,7 +3,6 @@ package nl.timocode.dlscript.parser.matchers;
 import nl.timocode.dlscript.parser.ParseElement;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,7 +14,7 @@ class TypePatternMatcherTest {
     void matchesSameType() {
         // GIVEN
         TypePatternMatcher cut = new TypePatternMatcher(Integer.class);
-        List<ParseElement> elements = Arrays.asList(
+        List<ParseElement> elements = List.of(
                 new ParseElement(1L, Long.class),
                 new ParseElement(2, Integer.class),
                 new ParseElement(3L, Long.class),
@@ -26,7 +25,7 @@ class TypePatternMatcherTest {
         List<PatternMatch> matches = cut.matches(elements);
 
         // THEN
-        assertEquals(Arrays.asList(
+        assertEquals(List.of(
                 PatternMatch.fullMatch(1, 2),
                 PatternMatch.fullMatch(3, 4)), matches);
     }
@@ -35,7 +34,7 @@ class TypePatternMatcherTest {
     void matchesSubType() {
         // GIVEN
         TypePatternMatcher cut = new TypePatternMatcher(Number.class);
-        List<ParseElement> elements = Arrays.asList(
+        List<ParseElement> elements = List.of(
                 new ParseElement(1L, Long.class),
                 new ParseElement("x", String.class)
         );
@@ -44,6 +43,6 @@ class TypePatternMatcherTest {
         List<PatternMatch> matches = cut.matches(elements);
 
         // THEN
-        assertEquals(Collections.singletonList(PatternMatch.fullMatch(0, 1)), matches);
+        assertEquals(List.of(PatternMatch.fullMatch(0, 1)), matches);
     }
 }
