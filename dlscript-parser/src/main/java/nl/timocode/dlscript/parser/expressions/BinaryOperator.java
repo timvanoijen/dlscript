@@ -1,7 +1,7 @@
 package nl.timocode.dlscript.parser.expressions;
 
+import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
-import nl.timocode.dlscript.parser.ParseElement;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 import nl.timocode.dlscript.parser.matchers.SequencePatternMatcher;
 import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
@@ -11,7 +11,7 @@ import nl.timocode.dlscript.parser.primitives.StringElement;
 import java.util.List;
 import java.util.Objects;
 
-public class BinaryOperator<L, R> {
+public class BinaryOperator<L, R> implements Element {
     private final L left;
     private final R right;
 
@@ -64,10 +64,10 @@ public class BinaryOperator<L, R> {
         }
 
         @Override
-        public U create(List<ParseElement> elements) {
+        public U create(List<Element> elements) {
             assert elements.size() == 3;
             //noinspection unchecked
-            return create((L) elements.get(0).value(), (R) elements.get(2).value());
+            return create((L) elements.get(0), (R) elements.get(2));
         }
     }
 }

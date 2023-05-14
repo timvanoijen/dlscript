@@ -1,22 +1,25 @@
 package nl.timocode.dlscript.parser;
 
+import nl.timocode.dlscript.parser.primitives.LongElement;
+import nl.timocode.dlscript.parser.primitives.StringElement;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class ParseElementReader {
+public final class ElementReader {
 
     private final Reader reader;
 
     private boolean initialized = false;
     private int currentChar;
 
-    public ParseElementReader(Reader reader) {
+    public ElementReader(Reader reader) {
         this.reader = reader;
     }
 
-    public Optional<ParseElement> read() throws IOException {
+    public Optional<Element> read() throws IOException {
 
         ensureInitialized();
         StringBuilder s = new StringBuilder();
@@ -48,8 +51,8 @@ public final class ParseElementReader {
         return isDigit == null
                 ? Optional.empty()
                 : Optional.of(isDigit
-                    ? new ParseElement(Long.parseLong(s.toString()), Long.class)
-                    : new ParseElement(s.toString(), String.class));
+                    ? new LongElement(Long.parseLong(s.toString()))
+                    : new StringElement(s.toString()));
     }
 
     public boolean hasNext() throws IOException {

@@ -1,9 +1,11 @@
 package nl.timocode.dlscript.parser.matchers;
 
-import nl.timocode.dlscript.parser.ParseElement;
+import nl.timocode.dlscript.parser.Element;
+import nl.timocode.dlscript.parser.expressions.Expression;
+import nl.timocode.dlscript.parser.primitives.LongElement;
+import nl.timocode.dlscript.parser.primitives.StringElement;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,12 +15,12 @@ class TypePatternMatcherTest {
     @Test
     void matchesSameType() {
         // GIVEN
-        TypePatternMatcher cut = new TypePatternMatcher(Integer.class);
-        List<ParseElement> elements = List.of(
-                new ParseElement(1L, Long.class),
-                new ParseElement(2, Integer.class),
-                new ParseElement(3L, Long.class),
-                new ParseElement(4, Integer.class)
+        TypePatternMatcher cut = new TypePatternMatcher(StringElement.class);
+        List<Element> elements = List.of(
+                new LongElement(1L),
+                new StringElement("2"),
+                new LongElement(3L),
+                new StringElement("4")
         );
 
         // WHEN
@@ -33,10 +35,10 @@ class TypePatternMatcherTest {
     @Test
     void matchesSubType() {
         // GIVEN
-        TypePatternMatcher cut = new TypePatternMatcher(Number.class);
-        List<ParseElement> elements = List.of(
-                new ParseElement(1L, Long.class),
-                new ParseElement("x", String.class)
+        TypePatternMatcher cut = new TypePatternMatcher(Expression.class);
+        List<Element> elements = List.of(
+                new LongElement(1L),
+                new StringElement("x")
         );
 
         // WHEN

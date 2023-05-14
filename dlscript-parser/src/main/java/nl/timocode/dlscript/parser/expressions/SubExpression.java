@@ -1,7 +1,7 @@
 package nl.timocode.dlscript.parser.expressions;
 
+import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
-import nl.timocode.dlscript.parser.ParseElement;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 import nl.timocode.dlscript.parser.matchers.SequencePatternMatcher;
 import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
@@ -35,9 +35,9 @@ public class SubExpression implements Expression {
         }
 
         @Override
-        public SubExpression create(List<ParseElement> elements) {
+        public SubExpression create(List<Element> elements) {
             assert elements.size() == 3;
-            return new SubExpression((Expression)elements.get(1).value());
+            return new SubExpression((Expression)elements.get(1));
         }
     }
 }

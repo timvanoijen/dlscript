@@ -1,7 +1,7 @@
 package nl.timocode.dlscript.parser.primitives;
 
+import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
-import nl.timocode.dlscript.parser.ParseElement;
 import nl.timocode.dlscript.parser.expressions.Expression;
 import nl.timocode.dlscript.parser.matchers.*;
 
@@ -32,9 +32,9 @@ public class DoubleElement implements Expression {
         }
 
         @Override
-        public DoubleElement create(List<ParseElement> elements) {
-            Long left = ((LongElement) elements.get(0).value()).getValue();
-            Long right = ((LongElement) elements.get(2).value()).getValue();
+        public DoubleElement create(List<Element> elements) {
+            Long left = ((LongElement) elements.get(0)).getValue();
+            Long right = ((LongElement) elements.get(2)).getValue();
             double combined = Double.parseDouble(left.toString() + "." + right.toString());
             return new DoubleElement(combined);
         }

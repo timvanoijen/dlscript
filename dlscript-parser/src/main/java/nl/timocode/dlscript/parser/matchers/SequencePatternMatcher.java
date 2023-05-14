@@ -1,9 +1,8 @@
 package nl.timocode.dlscript.parser.matchers;
 
-import nl.timocode.dlscript.parser.ParseElement;
+import nl.timocode.dlscript.parser.Element;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +20,7 @@ public final class SequencePatternMatcher implements PatternMatcher {
     }
 
     @Override
-    public List<PatternMatch> matches(List<? extends ParseElement> elements) {
+    public List<PatternMatch> matches(List<? extends Element> elements) {
         List<PatternMatch> matches = new ArrayList<>();
         for(int i = 0; i < elements.size(); i++) {
             boolean allMatch = true;

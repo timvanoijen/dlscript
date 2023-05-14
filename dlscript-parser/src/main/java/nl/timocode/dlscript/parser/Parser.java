@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 
 public final class Parser {
 
-    record TypeWithMatch<T>(Parsable<T> type, PatternMatch match) {}
+    record TypeWithMatch<T extends Element>(Parsable<T> type, PatternMatch match) {}
 
     private static final List<? extends Parsable<?>> ELEMENT_TYPES = List.of(
             new LongElement.Type(),
@@ -31,19 +31,19 @@ public final class Parser {
     );
 
     public Object parse(Reader reader) throws IOException {
-        ParseElementReader elementReader = new ParseElementReader(reader);
+        ElementReader elementReader = new ElementReader(reader);
 
-        Optional<ParseElement> elementOpt;
-        List<ParseElement> stack = new ArrayList<>();
+        Optional<Element> elementOpt;
+        List<Element> stack = new ArrayList<>();
 
         while((elementOpt = elementReader.read()).isPresent()) {
 
             // Add new element to stack
-            ParseElement element = elementOpt.get();
+            Element element = elementOpt.get();
             stack.add(element);
 
             while(true) {
-                List<ParseElement> finalStack = stack;
+                List<Element> finalStack = stack;
 
                 // Find types that match a pattern in the stack
                 List<? extends TypeWithMatch<?>> matches = ELEMENT_TYPES.stream()
@@ -77,8 +77,8 @@ public final class Parser {
                 }
 
                 // If not, replace the full match with the new type
-                ParseElement newElement = createParseElementFromTypeWithMatch(selected, stack);
-                List<ParseElement> newStack = new ArrayList<>();
+                Element newElement = createElementFromTypeWithMatch(selected, stack);
+                List<Element> newStack = new ArrayList<>();
                 newStack.addAll(stack.subList(0, selected.match().startElement()));
                 newStack.add(newElement);
                 newStack.addAll(stack.subList(selected.match().endElement(), stack.size()));
@@ -90,13 +90,12 @@ public final class Parser {
             return new ParseException("Cannot parse input", -1);
         }
 
-        return stack.get(0).value();
+        return stack.get(0);
     }
 
-    private ParseElement createParseElementFromTypeWithMatch(TypeWithMatch<?> typeWithMatch,
-                                                                    List<ParseElement> stack) {
-        Object element = typeWithMatch.type().create(stack.subList(
+    private Element createElementFromTypeWithMatch(TypeWithMatch<?> typeWithMatch,
+                                                   List<Element> stack) {
+        return typeWithMatch.type().create(stack.subList(
                 typeWithMatch.match().startElement(), typeWithMatch.match().endElement()));
-        return new ParseElement(element, element.getClass());
     }
 }

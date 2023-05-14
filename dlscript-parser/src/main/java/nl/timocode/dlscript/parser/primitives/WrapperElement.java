@@ -1,14 +1,14 @@
 package nl.timocode.dlscript.parser.primitives;
 
+import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
-import nl.timocode.dlscript.parser.ParseElement;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
 
 import java.util.List;
 import java.util.Objects;
 
-public abstract class WrapperElement<T> {
+public abstract class WrapperElement<T> implements Element {
 
     private final T value;
 
@@ -34,7 +34,7 @@ public abstract class WrapperElement<T> {
         return Objects.hash(value);
     }
 
-    public abstract static class Type<T, U> implements Parsable<U> {
+    public abstract static class Type<T, U extends Element> implements Parsable<U> {
 
         protected abstract Class<T> getWrappedType();
 
@@ -46,10 +46,10 @@ public abstract class WrapperElement<T> {
         }
 
         @Override
-        public U create(List<ParseElement> elements) {
+        public U create(List<Element> elements) {
             assert elements.size() == 1;
             //noinspection unchecked
-            return create((T) elements.get(0).value());
+            return create((T) elements.get(0));
         }
     }
 }

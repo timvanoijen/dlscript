@@ -1,7 +1,7 @@
 package nl.timocode.dlscript.parser.expressions;
 
+import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
-import nl.timocode.dlscript.parser.ParseElement;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 import nl.timocode.dlscript.parser.matchers.SequencePatternMatcher;
 import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
@@ -34,9 +34,9 @@ public class Negation implements Expression {
         }
 
         @Override
-        public Negation create(List<ParseElement> elements) {
+        public Negation create(List<Element> elements) {
             assert elements.size() == 2;
-            return new Negation((Expression) elements.get(1).value());
+            return new Negation((Expression) elements.get(1));
         }
     }
 }

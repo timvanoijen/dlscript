@@ -1,6 +1,8 @@
 package nl.timocode.dlscript.parser.matchers;
 
-import nl.timocode.dlscript.parser.ParseElement;
+import nl.timocode.dlscript.parser.Element;
+import nl.timocode.dlscript.parser.primitives.LongElement;
+import nl.timocode.dlscript.parser.primitives.StringElement;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -12,11 +14,11 @@ class ValuePatternMatcherTest {
     @Test
     void matches() {
         // GIVEN
-        ValuePatternMatcher<Integer> cut = new ValuePatternMatcher<>(3);
-        List<ParseElement> elements = List.of(
-                new ParseElement(3L, Long.class),
-                new ParseElement(2, Integer.class),
-                new ParseElement(3, Integer.class)
+        ValuePatternMatcher<LongElement> cut = new ValuePatternMatcher<>(new LongElement(3L));
+        List<Element> elements = List.of(
+                new LongElement(1L),
+                new StringElement("2"),
+                new LongElement(3L)
         );
 
         // WHEN

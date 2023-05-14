@@ -1,6 +1,6 @@
 package nl.timocode.dlscript.parser.matchers;
 
-import nl.timocode.dlscript.parser.ParseElement;
+import nl.timocode.dlscript.parser.Element;
 
 import java.util.Objects;
 
@@ -14,8 +14,8 @@ public final class TypePatternMatcher extends SingleElementPatternMatcher {
     }
 
     @Override
-    protected boolean matches(ParseElement element) {
-        return type.isAssignableFrom(element.type());
+    protected boolean matches(Element element) {
+        return type.isAssignableFrom(element.getClass());
     }
 
     @Override

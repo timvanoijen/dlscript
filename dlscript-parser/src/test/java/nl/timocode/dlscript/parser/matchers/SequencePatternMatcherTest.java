@@ -1,6 +1,7 @@
 package nl.timocode.dlscript.parser.matchers;
 
-import nl.timocode.dlscript.parser.ParseElement;
+import nl.timocode.dlscript.parser.Element;
+import nl.timocode.dlscript.parser.primitives.LongElement;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -27,7 +28,7 @@ class SequencePatternMatcherTest {
     void singleMatch(int el1, int el2, int el3, int el4, MatchType type, int startElement, int endElement) {
         // GIVEN
         SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 3);
-        List<? extends ParseElement> elements = createParseElements(el1, el2, el3, el4);
+        List<? extends Element> elements = createElements(el1, el2, el3, el4);
 
         // WHEN
         List<PatternMatch> matches = cut.matches(elements);
@@ -50,7 +51,7 @@ class SequencePatternMatcherTest {
     void noMatch(int el1, int el2, int el3, int el4) {
         // GIVEN
         SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 3);
-        List<? extends ParseElement> elements = createParseElements(el1, el2, el3, el4);
+        List<? extends Element> elements = createElements(el1, el2, el3, el4);
 
         // WHEN
         List<PatternMatch> matches = cut.matches(elements);
@@ -63,7 +64,7 @@ class SequencePatternMatcherTest {
     void multipleMatches() {
         // GIVEN
         SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 1);
-        List<? extends ParseElement> elements = createParseElements(0, 1, 2, 1, 2, 1);
+        List<? extends Element> elements = createElements(0, 1, 2, 1, 2, 1);
 
         // WHEN
         List<PatternMatch> matches = cut.matches(elements);
@@ -77,17 +78,18 @@ class SequencePatternMatcherTest {
     }
 
     private SequencePatternMatcher createSequencePatternMatcher(Integer... input) {
-        List<ValuePatternMatcher<Integer>> matchers = Arrays.stream(input)
+        List<ValuePatternMatcher<LongElement>> matchers = Arrays.stream(input)
+                .map(LongElement::new)
                 .map(ValuePatternMatcher::new)
                 .toList();
         return SequencePatternMatcher.of(matchers.toArray(new ValuePatternMatcher[0]));
     }
 
-    private List<? extends ParseElement> createParseElements(Integer... input) {
+    private List<? extends Element> createElements(Integer... input) {
         List<Integer> inputList = List.of(input);
 
         return inputList.stream()
-                .map(n -> new ParseElement(n, Integer.class))
+                .map(LongElement::new)
                 .toList();
     }
 }

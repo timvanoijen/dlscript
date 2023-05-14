@@ -4,11 +4,11 @@ import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 
 import java.util.List;
 
-public interface Parsable<T> {
+public interface Parsable<T extends Element> {
 
     PatternMatcher patternMatcher();
 
-    T create(List<ParseElement> elements);
+    T create(List<Element> elements);
 
     default int parsePriority() {
         return Integer.MAX_VALUE;

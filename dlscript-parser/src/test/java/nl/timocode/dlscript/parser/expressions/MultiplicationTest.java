@@ -1,11 +1,12 @@
 package nl.timocode.dlscript.parser.expressions;
 
-import nl.timocode.dlscript.parser.ParseElement;
+import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 import nl.timocode.dlscript.parser.matchers.SequencePatternMatcher;
 import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
 import nl.timocode.dlscript.parser.matchers.ValuePatternMatcher;
 import nl.timocode.dlscript.parser.primitives.DoubleElement;
+import nl.timocode.dlscript.parser.primitives.StringElement;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -37,7 +38,7 @@ class MultiplicationTest {
         // THEN
         assertEquals(SequencePatternMatcher.of(
                 new TypePatternMatcher(Expression.class),
-                new ValuePatternMatcher<>("*"),
+                new ValuePatternMatcher<>(new StringElement("*")),
                 new TypePatternMatcher(Expression.class)), matcher);
     }
 
@@ -45,10 +46,10 @@ class MultiplicationTest {
     void typeCreate() {
         // GIVEN
         Multiplication.Type cut = new Multiplication.Type();
-        List<ParseElement> elements = List.of(
-                new ParseElement(new DoubleElement(5), DoubleElement.class),
-                new ParseElement("*", String.class),
-                new ParseElement(new DoubleElement(6), DoubleElement.class));
+        List<Element> elements = List.of(
+                new DoubleElement(5),
+                new StringElement("*"),
+                new DoubleElement(6));
 
         // WHEN
         Multiplication multiplication = cut.create(elements);
