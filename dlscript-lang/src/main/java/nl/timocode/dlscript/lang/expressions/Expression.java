@@ -1,4 +1,4 @@
-package nl.timocode.dlscript.parser.expressions;
+package nl.timocode.dlscript.lang.expressions;
 
 import nl.timocode.dlscript.parser.Element;
 

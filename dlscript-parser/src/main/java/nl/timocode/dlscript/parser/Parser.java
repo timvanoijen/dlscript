@@ -1,11 +1,7 @@
 package nl.timocode.dlscript.parser;
 
-import nl.timocode.dlscript.parser.expressions.*;
-import nl.timocode.dlscript.parser.primitives.DoubleElement;
 import nl.timocode.dlscript.parser.matchers.PatternMatch;
-import nl.timocode.dlscript.parser.primitives.LongElement;
-import nl.timocode.dlscript.parser.primitives.StringElement;
-
+import nl.timocode.dlscript.parser.primitives.DoubleElement;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -16,19 +12,15 @@ import java.util.stream.IntStream;
 
 public final class Parser {
 
-    record TypeWithMatch<T extends Element>(Parsable<T> type, PatternMatch match) {}
+    private final List<Parsable<?>> elementTypes;
 
-    private static final List<? extends Parsable<?>> ELEMENT_TYPES = List.of(
-            new LongElement.Type(),
-            new StringElement.Type(),
-            new DoubleElement.Type(),
-            new SubExpression.Type(),
-            new Sum.Type(),
-            new Subtraction.Type(),
-            new Multiplication.Type(),
-            new Division.Type(),
-            new Negation.Type()
-    );
+    public Parser(List<Parsable<?>> elementTypes) {
+        elementTypes = new ArrayList<>(elementTypes);
+        elementTypes.add(new DoubleElement.Type());
+        this.elementTypes = elementTypes;
+    }
+
+    record TypeWithMatch<T extends Element>(Parsable<T> type, PatternMatch match) {}
 
     public Object parse(Reader reader) throws IOException {
         ElementReader elementReader = new ElementReader(reader);
@@ -47,7 +39,7 @@ public final class Parser {
 
                 // Find types that match a pattern in the stack and sort on highest end element and then on lowest
                 // start element
-                List<? extends TypeWithMatch<?>> matches = ELEMENT_TYPES.stream()
+                List<? extends TypeWithMatch<?>> matches = elementTypes.stream()
                         .flatMap(type ->
                                 type.patternMatcher().matches(finalStack).stream()
                                         .map(match -> new TypeWithMatch<>(type, match)))
@@ -77,8 +69,7 @@ public final class Parser {
 
                 // If not, replace the full match with the new type
                 Element newElement = createElementFromTypeWithMatch(selected, stack);
-                List<Element> newStack = new ArrayList<>();
-                newStack.addAll(stack.subList(0, selected.match().startElement()));
+                List<Element> newStack = new ArrayList<>(stack.subList(0, selected.match().startElement()));
                 newStack.add(newElement);
                 newStack.addAll(stack.subList(selected.match().endElement(), stack.size()));
                 stack = newStack;

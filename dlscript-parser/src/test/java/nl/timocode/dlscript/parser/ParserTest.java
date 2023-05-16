@@ -1,41 +1,55 @@
 package nl.timocode.dlscript.parser;
 
-import nl.timocode.dlscript.parser.expressions.Expression;
+import nl.timocode.dlscript.parser.primitives.DoubleElement;
+import nl.timocode.dlscript.parser.primitives.LongElement;
+import nl.timocode.dlscript.parser.testparsables.MaxTestType;
+import nl.timocode.dlscript.parser.testparsables.MultiplicationTestType;
+import nl.timocode.dlscript.parser.testparsables.SumTestType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParserTest {
 
-    private static final double EPSILON = 0.00000001;
-
-    private final Parser cut = new Parser();
+    private final Parser cut = new Parser(List.of(
+            new SumTestType(),
+            new MultiplicationTestType(),
+            new MaxTestType()
+    ));
 
     @ParameterizedTest
     @CsvSource({
-            "3, 3.0",
-            "3 + 5, 8.0",
-            "3 + 5 * 2, 13.0",
-            "3 * 5 + 2, 17.0",
-            "3 + 5 + 2, 10.0",
-            "3 * 5 * 2, 30.0",
-            "1 + 3 * 5 + 4, 20.0",
-            "(1 + 3) * ((5 + 4) * 2 + 1), 76.0",
-            "123.40 + 123.40, 246.80",
-            "-8 * (1 + 3), -32.0",
-            "5.6 * -(3 * 2 /4 + 16 - 13.4), -22.96"
+            "3 + 5, 8",
+            "3 + 5 + 2, 10",
+            "3 * 5 + 2, 17",
+            "3 + 5 * 2, 13",
+            "3 * 5 * 2, 30"
     })
-    void parse(String input, double expectedResult) throws IOException {
+    void parseWithLongs(String input, long expectedResult) throws IOException {
         // WHEN
         Object result = cut.parse(new StringReader(input));
 
         // THEN
-        assertTrue(result instanceof Expression);
-        assertTrue(Math.abs(expectedResult - ((Expression)result).eval()) < EPSILON);
+        assertTrue(result instanceof LongElement);
+        assertEquals(expectedResult, ((LongElement) result).getValue());
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "8.0, 8.0",
+            "'max(16.0, 12.0)', 16.0"
+    })
+    void parseWithDoubles(String input, double expectedResult) throws IOException {
+        // WHEN
+        Object result = cut.parse(new StringReader(input));
+
+        // THEN
+        assertTrue(result instanceof DoubleElement);
+        assertEquals(expectedResult, ((DoubleElement) result).getValue());
+    }
 }

@@ -1,23 +1,14 @@
 package nl.timocode.dlscript.parser.primitives;
 
-public class StringElement extends WrapperElement<String> {
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import nl.timocode.dlscript.parser.Element;
 
-    public StringElement(String value) {
-        super(value);
-    }
+@AllArgsConstructor
+@EqualsAndHashCode
+@Getter
+public class StringElement implements Element {
 
-    public static class Type extends WrapperElement.Type<String, StringElement> {
-
-        @Override
-        protected Class<String> getWrappedType() {
-            return String.class;
-        }
-
-        @Override
-        protected StringElement create(String object) {
-            return new StringElement(object);
-        }
-    }
-
-
+    private final String value;
 }

@@ -1,27 +1,14 @@
 package nl.timocode.dlscript.parser.primitives;
 
-import nl.timocode.dlscript.parser.expressions.Expression;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import nl.timocode.dlscript.parser.Element;
 
-public class LongElement extends WrapperElement<Long> implements Expression {
+@AllArgsConstructor
+@EqualsAndHashCode
+@Getter
+public class LongElement implements Element {
 
-    public LongElement(long value) {
-        super(value);
-    }
-
-    public double eval() {
-        return getValue();
-    }
-
-    public static class Type extends WrapperElement.Type<Long, LongElement> {
-
-        @Override
-        protected Class<Long> getWrappedType() {
-            return Long.class;
-        }
-
-        @Override
-        protected LongElement create(Long object) {
-            return new LongElement(object);
-        }
-    }
+    private final long value;
 }

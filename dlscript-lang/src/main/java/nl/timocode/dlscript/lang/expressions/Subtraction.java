@@ -1,4 +1,4 @@
-package nl.timocode.dlscript.parser.expressions;
+package nl.timocode.dlscript.lang.expressions;
 
 public class Subtraction extends BinaryExpressionOperator implements Expression {
 
