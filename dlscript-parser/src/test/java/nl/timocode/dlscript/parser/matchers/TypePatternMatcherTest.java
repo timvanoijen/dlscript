@@ -1,7 +1,6 @@
 package nl.timocode.dlscript.parser.matchers;
 
 import nl.timocode.dlscript.parser.Element;
-import nl.timocode.dlscript.parser.expressions.Expression;
 import nl.timocode.dlscript.parser.primitives.LongElement;
 import nl.timocode.dlscript.parser.primitives.StringElement;
 import org.junit.jupiter.api.Test;
@@ -35,9 +34,9 @@ class TypePatternMatcherTest {
     @Test
     void matchesSubType() {
         // GIVEN
-        TypePatternMatcher cut = new TypePatternMatcher(Expression.class);
+        TypePatternMatcher cut = new TypePatternMatcher(LongElement.class);
         List<Element> elements = List.of(
-                new LongElement(1L),
+                new SubLongElement(1L),
                 new StringElement("x")
         );
 
@@ -46,5 +45,11 @@ class TypePatternMatcherTest {
 
         // THEN
         assertEquals(List.of(PatternMatch.fullMatch(0, 1)), matches);
+    }
+
+    private static class SubLongElement extends LongElement {
+        public SubLongElement(long value) {
+            super(value);
+        }
     }
 }
