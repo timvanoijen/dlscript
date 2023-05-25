@@ -1,11 +1,7 @@
 package nl.timocode.dlscript.parser.testparsables;
 
-import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
-import nl.timocode.dlscript.parser.matchers.PatternMatcher;
-import nl.timocode.dlscript.parser.matchers.SequencePatternMatcher;
-import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
-import nl.timocode.dlscript.parser.matchers.ValuePatternMatcher;
+import nl.timocode.dlscript.parser.matchers.*;
 import nl.timocode.dlscript.parser.primitives.DoubleElement;
 import nl.timocode.dlscript.parser.primitives.StringElement;
 
@@ -26,9 +22,10 @@ public class MaxTestType implements Parsable<DoubleElement> {
     }
 
     @Override
-    public DoubleElement create(List<Element> elements) {
-        return new DoubleElement(Math.max(
-                ((DoubleElement)elements.get(2)).getValue(),
-                ((DoubleElement)elements.get(4)).getValue()));
+    public DoubleElement create(Match match) {
+        List<Match> innerMatches = ((SequencePatternMatcher.Match) match).getInnerMatches();
+        double left = ((DoubleElement)((TypePatternMatcher.Match) innerMatches.get(2)).getElement()).getValue();
+        double right = ((DoubleElement)((TypePatternMatcher.Match) innerMatches.get(4)).getElement()).getValue();
+        return new DoubleElement(Math.max(left, right));
     }
 }

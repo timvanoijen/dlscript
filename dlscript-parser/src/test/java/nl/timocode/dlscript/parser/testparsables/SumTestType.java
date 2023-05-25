@@ -1,11 +1,7 @@
 package nl.timocode.dlscript.parser.testparsables;
 
-import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.Parsable;
-import nl.timocode.dlscript.parser.matchers.PatternMatcher;
-import nl.timocode.dlscript.parser.matchers.SequencePatternMatcher;
-import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
-import nl.timocode.dlscript.parser.matchers.ValuePatternMatcher;
+import nl.timocode.dlscript.parser.matchers.*;
 import nl.timocode.dlscript.parser.primitives.LongElement;
 import nl.timocode.dlscript.parser.primitives.StringElement;
 
@@ -21,9 +17,11 @@ public class SumTestType implements Parsable<LongElement> {
     }
 
     @Override
-    public LongElement create(List<Element> elements) {
-        return new LongElement(((LongElement)elements.get(0)).getValue()
-                + ((LongElement)elements.get(2)).getValue());
+    public LongElement create(Match match) {
+        List<Match> innerMatches = ((SequencePatternMatcher.Match) match).getInnerMatches();
+        long left = ((LongElement)((TypePatternMatcher.Match) innerMatches.get(0)).getElement()).getValue();
+        long right = ((LongElement)((TypePatternMatcher.Match) innerMatches.get(2)).getElement()).getValue();
+        return new LongElement(left + right);
     }
 
     @Override

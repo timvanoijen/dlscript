@@ -5,5 +5,5 @@ import nl.timocode.dlscript.parser.Element;
 import java.util.List;
 
 public interface PatternMatcher {
-    List<PatternMatch> matches(List<? extends Element> elements);
+    List<MatchResult> matches(List<? extends Element> elements, boolean fromStart);
 }

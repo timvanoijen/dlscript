@@ -16,7 +16,7 @@ public class DoubleElement implements Element {
 
     private final double value;
 
-    public static class Type implements Parsable<DoubleElement> {
+    public static class ParsableType implements Parsable<DoubleElement> {
 
         private static final PatternMatcher PATTERNMATCHER = SequencePatternMatcher.of(
                         new TypePatternMatcher(LongElement.class),
@@ -29,9 +29,10 @@ public class DoubleElement implements Element {
         }
 
         @Override
-        public DoubleElement create(List<Element> elements) {
-            long left = ((LongElement) elements.get(0)).getValue();
-            long right = ((LongElement) elements.get(2)).getValue();
+        public DoubleElement create(Match match) {
+            List<Match> innerMatches = ((SequencePatternMatcher.Match) match).getInnerMatches();
+            long left = ((LongElement)((TypePatternMatcher.Match)innerMatches.get(0)).getElement()).getValue();
+            long right = ((LongElement)((TypePatternMatcher.Match)innerMatches.get(2)).getElement()).getValue();
             double combined = Double.parseDouble(left + "." + right);
             return new DoubleElement(combined);
         }

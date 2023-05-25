@@ -23,12 +23,13 @@ class TypePatternMatcherTest {
         );
 
         // WHEN
-        List<PatternMatch> matches = cut.matches(elements);
+        List<MatchResult> matches = cut.matches(elements, false);
 
         // THEN
         assertEquals(List.of(
-                PatternMatch.fullMatch(1, 2),
-                PatternMatch.fullMatch(3, 4)), matches);
+                MatchResult.full(1, 2, new TypePatternMatcher.Match(elements.get(1))),
+                MatchResult.full(3, 4, new TypePatternMatcher.Match(elements.get(3)))),
+                matches);
     }
 
     @Test
@@ -41,10 +42,12 @@ class TypePatternMatcherTest {
         );
 
         // WHEN
-        List<PatternMatch> matches = cut.matches(elements);
+        List<MatchResult> matches = cut.matches(elements, false);
 
         // THEN
-        assertEquals(List.of(PatternMatch.fullMatch(0, 1)), matches);
+        assertEquals(List.of(
+                MatchResult.full(0, 1, new TypePatternMatcher.Match(elements.get(0)))),
+                matches);
     }
 
     private static class SubLongElement extends LongElement {

@@ -1,6 +1,6 @@
 package nl.timocode.dlscript.parser;
 
-import nl.timocode.dlscript.parser.matchers.PatternMatch;
+import nl.timocode.dlscript.parser.matchers.MatchResult;
 import nl.timocode.dlscript.parser.primitives.DoubleElement;
 
 import java.io.IOException;
@@ -16,11 +16,11 @@ public final class Parser {
 
     public Parser(List<Parsable<?>> elementTypes) {
         elementTypes = new ArrayList<>(elementTypes);
-        elementTypes.add(new DoubleElement.Type());
+        elementTypes.add(new DoubleElement.ParsableType());
         this.elementTypes = elementTypes;
     }
 
-    record TypeWithMatch<T extends Element>(Parsable<T> type, PatternMatch match) {}
+    record TypeWithMatch<T extends Element>(Parsable<T> type, MatchResult matchResult) {}
 
     public Object parse(Reader reader) throws IOException {
         ElementReader elementReader = new ElementReader(reader);
@@ -37,19 +37,19 @@ public final class Parser {
             while(true) {
                 List<Element> finalStack = stack;
 
-                // Find types that match a pattern in the stack and sort on highest end element and then on lowest
+                // Find types that matchResult a pattern in the stack and sort on highest end element and then on lowest
                 // start element
                 List<? extends TypeWithMatch<?>> matches = elementTypes.stream()
                         .flatMap(type ->
-                                type.patternMatcher().matches(finalStack).stream()
+                                type.patternMatcher().matches(finalStack, false).stream()
                                         .map(match -> new TypeWithMatch<>(type, match)))
-                        .sorted(Comparator.<TypeWithMatch<?>>comparingInt(twm -> -twm.match().endElement())
-                                .thenComparing(twm -> twm.match().startElement()))
+                        .sorted(Comparator.<TypeWithMatch<?>>comparingInt(twm -> -twm.matchResult().getEndElementIdx())
+                                .thenComparing(twm -> twm.matchResult().getStartElementIdx()))
                         .collect(Collectors.toCollection(ArrayList::new));
 
-                // Find first full match
+                // Find first full matchResult
                 OptionalInt firstFullMatchIdxOpt = IntStream.range(0, matches.size())
-                        .filter(i -> matches.get(i).match().fullMatch()).findFirst();
+                        .filter(i -> matches.get(i).matchResult().isFullMatch()).findFirst();
                 if (firstFullMatchIdxOpt.isEmpty()) {
                     break;
                 }
@@ -57,7 +57,7 @@ public final class Parser {
                 int firstFullMatchIdx = firstFullMatchIdxOpt.getAsInt();
                 TypeWithMatch<?> selected = matches.get(firstFullMatchIdx);
 
-                // Find out if there is a partial match with a higher priority
+                // Find out if there is a partial matchResult with a higher priority
                 boolean potentialBetterCandidate = elementReader.hasNext() &&
                         IntStream.range(0, firstFullMatchIdx)
                             .mapToObj(i -> matches.get(i).type())
@@ -67,11 +67,11 @@ public final class Parser {
                     break;
                 }
 
-                // If not, replace the full match with the new type
-                Element newElement = createElementFromTypeWithMatch(selected, stack);
-                List<Element> newStack = new ArrayList<>(stack.subList(0, selected.match().startElement()));
+                // If not, replace the full matchResult with the new type
+                Element newElement = selected.type().create(selected.matchResult().getMatch());
+                List<Element> newStack = new ArrayList<>(stack.subList(0, selected.matchResult().getStartElementIdx()));
                 newStack.add(newElement);
-                newStack.addAll(stack.subList(selected.match().endElement(), stack.size()));
+                newStack.addAll(stack.subList(selected.matchResult().getEndElementIdx(), stack.size()));
                 stack = newStack;
             }
         }
@@ -81,11 +81,5 @@ public final class Parser {
         }
 
         return stack.get(0);
-    }
-
-    private Element createElementFromTypeWithMatch(TypeWithMatch<?> typeWithMatch,
-                                                   List<Element> stack) {
-        return typeWithMatch.type().create(stack.subList(
-                typeWithMatch.match().startElement(), typeWithMatch.match().endElement()));
     }
 }

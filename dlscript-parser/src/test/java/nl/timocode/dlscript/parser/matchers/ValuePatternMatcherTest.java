@@ -22,9 +22,11 @@ class ValuePatternMatcherTest {
         );
 
         // WHEN
-        List<PatternMatch> matches = cut.matches(elements);
+        List<MatchResult> matches = cut.matches(elements, false);
 
         // THEN
-        assertEquals(List.of(PatternMatch.fullMatch(2, 3)), matches);
+        assertEquals(List.of(
+                MatchResult.full(2, 3, new ValuePatternMatcher.Match(elements.get(2)))),
+                matches);
     }
 }
