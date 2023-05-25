@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 @AllArgsConstructor
+@EqualsAndHashCode
 public class OptionalPatternMatcher implements PatternMatcher {
 
     private final PatternMatcher innerMatcher;

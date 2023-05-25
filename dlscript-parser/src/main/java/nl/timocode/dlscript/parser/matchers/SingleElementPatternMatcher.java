@@ -6,7 +6,6 @@ import lombok.Getter;
 import nl.timocode.dlscript.parser.Element;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class SingleElementPatternMatcher implements PatternMatcher {
