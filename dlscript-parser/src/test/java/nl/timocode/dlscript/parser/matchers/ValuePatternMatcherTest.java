@@ -14,7 +14,7 @@ class ValuePatternMatcherTest {
     @Test
     void matches() {
         // GIVEN
-        ValuePatternMatcher<LongElement> cut = new ValuePatternMatcher<>(new LongElement(3L));
+        ValuePattern.Matcher cut = ValuePattern.Matcher.of(new LongElement(3L));
         List<Element> elements = List.of(
                 new LongElement(1L),
                 new StringElement("2"),
@@ -26,7 +26,7 @@ class ValuePatternMatcherTest {
 
         // THEN
         assertEquals(List.of(
-                MatchResult.full(2, 3, new ValuePatternMatcher.Match(elements.get(2)))),
+                MatchResult.full(2, 3, new ValuePattern(elements.get(2)))),
                 matches);
     }
 }

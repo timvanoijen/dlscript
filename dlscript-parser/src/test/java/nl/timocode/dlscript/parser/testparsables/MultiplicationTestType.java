@@ -11,16 +11,17 @@ public class MultiplicationTestType implements Parsable<LongElement> {
 
     @Override
     public PatternMatcher patternMatcher() {
-        return SequencePatternMatcher.of(new TypePatternMatcher(LongElement.class),
-                new ValuePatternMatcher<>(new StringElement("*")),
-                new TypePatternMatcher(LongElement.class));
+        return SequencePattern.Matcher.of(
+                TypePattern.Matcher.of(LongElement.class),
+                ValuePattern.Matcher.of(new StringElement("*")),
+                TypePattern.Matcher.of(LongElement.class));
     }
 
     @Override
-    public LongElement create(Match match) {
-        List<Match> innerMatches = ((SequencePatternMatcher.Match) match).getInnerMatches();
-        long left = ((LongElement)((TypePatternMatcher.Match) innerMatches.get(0)).getElement()).getValue();
-        long right = ((LongElement)((TypePatternMatcher.Match) innerMatches.get(2)).getElement()).getValue();
+    public LongElement create(Pattern pattern) {
+        List<Pattern> innerPatterns = ((SequencePattern) pattern).getInnerPatterns();
+        long left = ((LongElement)((TypePattern) innerPatterns.get(0)).getElement()).getValue();
+        long right = ((LongElement)((TypePattern) innerPatterns.get(2)).getElement()).getValue();
         return new LongElement(left * right);
     }
 

@@ -29,7 +29,7 @@ class SequencePatternMatcherTest {
     })
     void singleMatch(int el1, int el2, int el3, int el4, MatchType type, int startElement, int endElement) {
         // GIVEN
-        SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 3);
+        SequencePattern.Matcher cut = createSequencePatternMatcher(1, 2, 3);
         List<? extends Element> elements = createElements(el1, el2, el3, el4);
 
         // WHEN
@@ -52,7 +52,7 @@ class SequencePatternMatcherTest {
     })
     void noMatch(int el1, int el2, int el3, int el4) {
         // GIVEN
-        SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 3);
+        SequencePattern.Matcher cut = createSequencePatternMatcher(1, 2, 3);
         List<? extends Element> elements = createElements(el1, el2, el3, el4);
 
         // WHEN
@@ -65,7 +65,7 @@ class SequencePatternMatcherTest {
     @Test
     void multipleMatches() {
         // GIVEN
-        SequencePatternMatcher cut = createSequencePatternMatcher(1, 2, 1);
+        SequencePattern.Matcher cut = createSequencePatternMatcher(1, 2, 1);
         List<? extends Element> elements = createElements(0, 1, 2, 1, 2, 1);
 
         // WHEN
@@ -79,12 +79,12 @@ class SequencePatternMatcherTest {
         assertEquals(List.of(expected1, expected2, expected3), matches);
     }
 
-    private SequencePatternMatcher createSequencePatternMatcher(Integer... input) {
-        List<ValuePatternMatcher<LongElement>> matchers = Arrays.stream(input)
+    private SequencePattern.Matcher createSequencePatternMatcher(Integer... input) {
+        List<ValuePattern.Matcher> matchers = Arrays.stream(input)
                 .map(LongElement::new)
-                .map(ValuePatternMatcher::new)
+                .map(ValuePattern.Matcher::of)
                 .toList();
-        return SequencePatternMatcher.of(matchers.toArray(new ValuePatternMatcher[0]));
+        return SequencePattern.Matcher.of(matchers.toArray(new ValuePattern.Matcher[0]));
     }
 
     private List<? extends Element> createElements(Integer... input) {
@@ -96,9 +96,9 @@ class SequencePatternMatcherTest {
     }
 
     private MatchResult createFullMatchResult(List<? extends Element> elements, int startElementIdx, int endElementIdx) {
-        List<Match> innerMatches = IntStream.range(startElementIdx, endElementIdx)
-                .mapToObj(i -> new SingleElementPatternMatcher.Match(elements.get(i)))
+        List<Pattern> innerPatterns = IntStream.range(startElementIdx, endElementIdx)
+                .mapToObj(i -> new ValuePattern(elements.get(i)))
                 .collect(Collectors.toList());
-        return MatchResult.full(startElementIdx, endElementIdx, new SequencePatternMatcher.Match(innerMatches));
+        return MatchResult.full(startElementIdx, endElementIdx, new SequencePattern(innerPatterns));
     }
 }

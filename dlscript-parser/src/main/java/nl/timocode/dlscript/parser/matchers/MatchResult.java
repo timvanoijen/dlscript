@@ -13,13 +13,13 @@ public class MatchResult {
     private final boolean isFullMatch;
     private final int startElementIdx;
     private final int endElementIdx;
-    private final Match match;
+    private final Pattern pattern;
 
     static MatchResult partial(int startElementIdx) {
         return new MatchResult(false, startElementIdx, Integer.MAX_VALUE, null);
     }
 
-    static MatchResult full(int startElementIdx, int endElementIdx, Match match) {
-        return new MatchResult(true, startElementIdx, endElementIdx, match);
+    static MatchResult full(int startElementIdx, int endElementIdx, Pattern pattern) {
+        return new MatchResult(true, startElementIdx, endElementIdx, pattern);
     }
 }

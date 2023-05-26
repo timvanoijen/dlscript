@@ -14,7 +14,7 @@ class TypePatternMatcherTest {
     @Test
     void matchesSameType() {
         // GIVEN
-        TypePatternMatcher cut = new TypePatternMatcher(StringElement.class);
+        TypePattern.Matcher cut = TypePattern.Matcher.of(StringElement.class);
         List<Element> elements = List.of(
                 new LongElement(1L),
                 new StringElement("2"),
@@ -27,15 +27,15 @@ class TypePatternMatcherTest {
 
         // THEN
         assertEquals(List.of(
-                MatchResult.full(1, 2, new TypePatternMatcher.Match(elements.get(1))),
-                MatchResult.full(3, 4, new TypePatternMatcher.Match(elements.get(3)))),
+                MatchResult.full(1, 2, new TypePattern(elements.get(1))),
+                MatchResult.full(3, 4, new TypePattern(elements.get(3)))),
                 matches);
     }
 
     @Test
     void matchesSubType() {
         // GIVEN
-        TypePatternMatcher cut = new TypePatternMatcher(LongElement.class);
+        TypePattern.Matcher cut = TypePattern.Matcher.of(LongElement.class);
         List<Element> elements = List.of(
                 new SubLongElement(1L),
                 new StringElement("x")
@@ -46,7 +46,7 @@ class TypePatternMatcherTest {
 
         // THEN
         assertEquals(List.of(
-                MatchResult.full(0, 1, new TypePatternMatcher.Match(elements.get(0)))),
+                MatchResult.full(0, 1, new TypePattern(elements.get(0)))),
                 matches);
     }
 

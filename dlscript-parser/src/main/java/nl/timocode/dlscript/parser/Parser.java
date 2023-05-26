@@ -68,7 +68,7 @@ public final class Parser {
                 }
 
                 // If not, replace the full matchResult with the new type
-                Element newElement = selected.type().create(selected.matchResult().getMatch());
+                Element newElement = selected.type().create(selected.matchResult().getPattern());
                 List<Element> newStack = new ArrayList<>(stack.subList(0, selected.matchResult().getStartElementIdx()));
                 newStack.add(newElement);
                 newStack.addAll(stack.subList(selected.matchResult().getEndElementIdx(), stack.size()));
