@@ -1,13 +1,10 @@
 package nl.timocode.dlscript.parser.primitives;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 import nl.timocode.dlscript.parser.Element;
+import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.*;
-
-import java.util.List;
 
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -16,25 +13,33 @@ public class DoubleElement implements Element {
 
     private final double value;
 
-    public static class ParsableType implements Parsable<DoubleElement> {
+    public static class Type implements Parsable<DoubleElement, Type.Builder> {
 
-        private static final PatternMatcher PATTERNMATCHER = SequencePattern.Matcher.of(
-                        TypePattern.Matcher.of(LongElement.class),
-                        ValuePattern.Matcher.of(new StringElement(".")),
-                        TypePattern.Matcher.of(LongElement.class));
+        private static final PatternMatcher<Builder> PATTERN_MATCHER = SequencePatternMatcher.of(
+                TypePatternMatcher.of(LongElement.class, Builder::setLeft),
+                ValuePatternMatcher.of(new StringElement(".")),
+                TypePatternMatcher.of(LongElement.class, Builder::setRight));
 
         @Override
-        public PatternMatcher patternMatcher() {
-            return PATTERNMATCHER;
+        public PatternMatcher<Builder> patternMatcher() {
+            return PATTERN_MATCHER;
         }
 
         @Override
-        public DoubleElement create(Pattern pattern) {
-            List<Pattern> innerPatterns = ((SequencePattern) pattern).getInnerPatterns();
-            long left = ((LongElement)((TypePattern) innerPatterns.get(0)).getElement()).getValue();
-            long right = ((LongElement)((TypePattern) innerPatterns.get(2)).getElement()).getValue();
-            double combined = Double.parseDouble(left + "." + right);
-            return new DoubleElement(combined);
+        public Builder createBuilder() {
+            return new Builder();
+        }
+
+        @Data
+        public static class Builder implements ElementBuilder<DoubleElement> {
+            private LongElement left;
+            private LongElement right;
+
+            @Override
+            public DoubleElement build() {
+                double value = Double.parseDouble(left.getValue() + "." + right.getValue());
+                return new DoubleElement(value);
+            }
         }
     }
 }

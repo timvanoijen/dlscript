@@ -1,13 +1,9 @@
 package nl.timocode.dlscript.parser.primitives;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import nl.timocode.dlscript.parser.Element;
 
-@AllArgsConstructor
-@EqualsAndHashCode
-@Getter
+@Data
 public class LongElement implements Element {
 
     private final long value;

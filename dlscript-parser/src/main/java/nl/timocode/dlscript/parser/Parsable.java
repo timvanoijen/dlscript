@@ -1,13 +1,11 @@
 package nl.timocode.dlscript.parser;
 
-import nl.timocode.dlscript.parser.matchers.Pattern;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 
-public interface Parsable<T extends Element> {
+public interface Parsable<E extends Element, B extends ElementBuilder<E>> {
 
-    PatternMatcher patternMatcher();
-
-    T create(Pattern pattern);
+    PatternMatcher<B> patternMatcher();
+    B createBuilder();
 
     default int parsePriority() {
         return Integer.MAX_VALUE;

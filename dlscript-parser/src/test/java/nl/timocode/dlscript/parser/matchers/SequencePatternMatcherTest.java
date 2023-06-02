@@ -1,19 +1,20 @@
 package nl.timocode.dlscript.parser.matchers;
 
+import lombok.Getter;
 import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.primitives.LongElement;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/** @noinspection unchecked*/
 class SequencePatternMatcherTest {
 
     private enum MatchType {
@@ -29,18 +30,19 @@ class SequencePatternMatcherTest {
     })
     void singleMatch(int el1, int el2, int el3, int el4, MatchType type, int startElement, int endElement) {
         // GIVEN
-        SequencePattern.Matcher cut = createSequencePatternMatcher(1, 2, 3);
+        SequencePatternMatcher<?> cut = createSequencePatternMatcher(1, 2, 3);
         List<? extends Element> elements = createElements(el1, el2, el3, el4);
 
         // WHEN
-        List<MatchResult> matches = cut.matches(elements, false);
+        List<? extends MatchResult<?>> matches = cut.matches(elements, false);
 
         // THEN
-        MatchResult expected = MatchType.FULL.equals(type)
-                ? createFullMatchResult(elements, startElement, endElement)
-                : MatchResult.partial(startElement);
-
-        assertEquals(List.of(expected), matches);
+        assertEquals(1, matches.size());
+        if (MatchType.FULL.equals(type)) {
+            assertMatch(startElement, endElement, List.of(1L, 2L, 3L), (MatchResult<TestBuilder>) matches.get(0));
+        } else {
+            assertEquals(MatchResult.partial(startElement), matches.get(0));
+        }
     }
 
     @ParameterizedTest
@@ -52,11 +54,11 @@ class SequencePatternMatcherTest {
     })
     void noMatch(int el1, int el2, int el3, int el4) {
         // GIVEN
-        SequencePattern.Matcher cut = createSequencePatternMatcher(1, 2, 3);
+        SequencePatternMatcher<?> cut = createSequencePatternMatcher(1, 2, 3);
         List<? extends Element> elements = createElements(el1, el2, el3, el4);
 
         // WHEN
-        List<MatchResult> matches = cut.matches(elements, false);
+        List<? extends MatchResult<?>> matches = cut.matches(elements, false);
 
         // THEN
         assertEquals(Collections.emptyList(), matches);
@@ -65,26 +67,25 @@ class SequencePatternMatcherTest {
     @Test
     void multipleMatches() {
         // GIVEN
-        SequencePattern.Matcher cut = createSequencePatternMatcher(1, 2, 1);
+        SequencePatternMatcher<?> cut = createSequencePatternMatcher(1, 2, 1);
         List<? extends Element> elements = createElements(0, 1, 2, 1, 2, 1);
 
         // WHEN
-        List<MatchResult> matches = cut.matches(elements, false);
+        List<? extends MatchResult<?>> matches = cut.matches(elements, false);
 
         // THEN
-        MatchResult expected1 = MatchResult.partial(5);
-        MatchResult expected2 = createFullMatchResult(elements, 1, 4);
-        MatchResult expected3 = createFullMatchResult(elements,3, 6);
-
-        assertEquals(List.of(expected1, expected2, expected3), matches);
+        assertEquals(3, matches.size());
+        assertEquals(MatchResult.partial(5), matches.get(0));
+        assertMatch(1, 4, List.of(1L, 2L, 1L), (MatchResult<TestBuilder>) matches.get(1));
+        assertMatch(3, 6, List.of(1L, 2L, 1L), (MatchResult<TestBuilder>) matches.get(2));
     }
 
-    private SequencePattern.Matcher createSequencePatternMatcher(Integer... input) {
-        List<ValuePattern.Matcher> matchers = Arrays.stream(input)
+    private SequencePatternMatcher<?> createSequencePatternMatcher(Integer... input) {
+        List<ValuePatternMatcher<LongElement, TestBuilder>> matchers = Arrays.stream(input)
                 .map(LongElement::new)
-                .map(ValuePattern.Matcher::of)
+                .map(e -> ValuePatternMatcher.of(e, TestBuilder::addElement))
                 .toList();
-        return SequencePattern.Matcher.of(matchers.toArray(new ValuePattern.Matcher[0]));
+        return SequencePatternMatcher.of(matchers.toArray(new ValuePatternMatcher[0]));
     }
 
     private List<? extends Element> createElements(Integer... input) {
@@ -95,10 +96,20 @@ class SequencePatternMatcherTest {
                 .toList();
     }
 
-    private MatchResult createFullMatchResult(List<? extends Element> elements, int startElementIdx, int endElementIdx) {
-        List<Pattern> innerPatterns = IntStream.range(startElementIdx, endElementIdx)
-                .mapToObj(i -> new ValuePattern(elements.get(i)))
-                .collect(Collectors.toList());
-        return MatchResult.full(startElementIdx, endElementIdx, new SequencePattern(innerPatterns));
+    private void assertMatch(int expStartIdx, int expEndIdx, List<Long> expValues, MatchResult<TestBuilder> result) {
+        assertEquals(expStartIdx, result.getStartElementIdx());
+        assertEquals(expEndIdx, result.getEndElementIdx());
+        TestBuilder tb = new TestBuilder();
+        result.consume(tb);
+        assertEquals(expValues, tb.getValues());
+    }
+
+    @Getter
+    private static class TestBuilder {
+        private final List<Long> values = new ArrayList<>();
+
+        public void addElement(LongElement value) {
+            values.add(value.getValue());
+        }
     }
 }

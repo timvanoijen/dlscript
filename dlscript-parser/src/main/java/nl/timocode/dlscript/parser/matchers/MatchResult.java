@@ -5,21 +5,27 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.function.Consumer;
+
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 @Getter
-public class MatchResult {
+public class MatchResult<C> {
 
     private final boolean isFullMatch;
     private final int startElementIdx;
     private final int endElementIdx;
-    private final Pattern pattern;
+    private final Consumer<C> acceptResultCollector;
 
-    static MatchResult partial(int startElementIdx) {
-        return new MatchResult(false, startElementIdx, Integer.MAX_VALUE, null);
+    static <C> MatchResult<C> partial(int startElementIdx) {
+        return new MatchResult<>(false, startElementIdx, Integer.MAX_VALUE, null);
     }
 
-    static MatchResult full(int startElementIdx, int endElementIdx, Pattern pattern) {
-        return new MatchResult(true, startElementIdx, endElementIdx, pattern);
+    static <C> MatchResult<C> full(int startElementIdx, int endElementIdx, Consumer<C> consumeFn) {
+        return new MatchResult<>(true, startElementIdx, endElementIdx, consumeFn);
+    }
+
+    public void consume(C consumer) {
+        acceptResultCollector.accept(consumer);
     }
 }

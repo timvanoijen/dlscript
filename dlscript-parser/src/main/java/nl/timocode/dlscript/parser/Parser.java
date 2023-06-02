@@ -12,15 +12,17 @@ import java.util.stream.IntStream;
 
 public final class Parser {
 
-    private final List<Parsable<?>> elementTypes;
+    private final List<Parsable<?,?>> elementTypes;
 
-    public Parser(List<Parsable<?>> elementTypes) {
+    public Parser(List<Parsable<?,?>> elementTypes) {
         elementTypes = new ArrayList<>(elementTypes);
-        elementTypes.add(new DoubleElement.ParsableType());
+        elementTypes.add(new DoubleElement.Type());
         this.elementTypes = elementTypes;
     }
 
-    record TypeWithMatch<T extends Element>(Parsable<T> type, MatchResult matchResult) {}
+    record TypeWithMatch<E extends Element, B extends ElementBuilder<E>>(
+            Parsable<E, B> type,
+            MatchResult<B> matchResult) {}
 
     public Object parse(Reader reader) throws IOException {
         ElementReader elementReader = new ElementReader(reader);
@@ -39,11 +41,15 @@ public final class Parser {
 
                 // Find types that matchResult a pattern in the stack and sort on highest end element and then on lowest
                 // start element
-                List<? extends TypeWithMatch<?>> matches = elementTypes.stream()
+
+                // Type safety is guaranteed but Java's type inference is not smart enough, therefore we have to fall
+                // back to some raw types instead of wildcard types.
+                //noinspection unchecked, rawtypes
+                List<TypeWithMatch> matches = elementTypes.stream()
                         .flatMap(type ->
                                 type.patternMatcher().matches(finalStack, false).stream()
-                                        .map(match -> new TypeWithMatch<>(type, match)))
-                        .sorted(Comparator.<TypeWithMatch<?>>comparingInt(twm -> -twm.matchResult().getEndElementIdx())
+                                        .map(match -> new TypeWithMatch(type, match)))
+                        .sorted(Comparator.<TypeWithMatch>comparingInt(twm -> -twm.matchResult().getEndElementIdx())
                                 .thenComparing(twm -> twm.matchResult().getStartElementIdx()))
                         .collect(Collectors.toCollection(ArrayList::new));
 
@@ -55,7 +61,7 @@ public final class Parser {
                 }
 
                 int firstFullMatchIdx = firstFullMatchIdxOpt.getAsInt();
-                TypeWithMatch<?> selected = matches.get(firstFullMatchIdx);
+                TypeWithMatch<?,?> selected = matches.get(firstFullMatchIdx);
 
                 // Find out if there is a partial matchResult with a higher priority
                 boolean potentialBetterCandidate = elementReader.hasNext() &&
@@ -68,7 +74,7 @@ public final class Parser {
                 }
 
                 // If not, replace the full matchResult with the new type
-                Element newElement = selected.type().create(selected.matchResult().getPattern());
+                Element newElement = process(selected);
                 List<Element> newStack = new ArrayList<>(stack.subList(0, selected.matchResult().getStartElementIdx()));
                 newStack.add(newElement);
                 newStack.addAll(stack.subList(selected.matchResult().getEndElementIdx(), stack.size()));
@@ -81,5 +87,11 @@ public final class Parser {
         }
 
         return stack.get(0);
+    }
+
+    private <E extends Element, B extends ElementBuilder<E>> E process(TypeWithMatch<E, B> typeWithMatch) {
+        B builder = typeWithMatch.type().createBuilder();
+        typeWithMatch.matchResult.consume(builder);
+        return builder.build();
     }
 }
