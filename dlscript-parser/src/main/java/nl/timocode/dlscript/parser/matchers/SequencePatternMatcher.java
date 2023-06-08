@@ -45,16 +45,17 @@ public class SequencePatternMatcher<C> implements PatternMatcher<C> {
             List<? extends Element> remElements = elements.subList(intermediateResult.endIdx, elements.size());
             boolean innerFromStart = matcherIdx > 0 || fromStart;
             for(MatchResult<C> innerMatchResult : matchers.get(matcherIdx).matches(remElements, innerFromStart)) {
+                int newStartIdx = matcherIdx == 0 ? innerMatchResult.getStartElementIdx() : intermediateResult.startIdx;
                 if (innerMatchResult.isFullMatch()) {
                     List<Consumer<C>> newInnerConsumers =
                             new ArrayList<>(intermediateResult.innerConsumers);
                     newInnerConsumers.add(innerMatchResult.getAcceptResultCollector());
-                    int newStartIdx = matcherIdx == 0 ? innerMatchResult.getStartElementIdx() : intermediateResult.startIdx;
                     int newEndIdx = intermediateResult.endIdx + innerMatchResult.getEndElementIdx();
                     intermediateResults.add(new ResultState<>(newInnerConsumers,
                             matcherIdx + 1, newStartIdx, newEndIdx));
+                } else {
+                    finalResults.add(MatchResult.partial(newStartIdx));
                 }
-                //TODO: if partial match.... then also make a partial match for the SequencePatternMatcher
             }
         }
 
