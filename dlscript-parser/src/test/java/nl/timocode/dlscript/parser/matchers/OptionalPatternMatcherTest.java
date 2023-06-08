@@ -6,47 +6,56 @@ import nl.timocode.dlscript.parser.primitives.LongElement;
 import nl.timocode.dlscript.parser.primitives.StringElement;
 import org.junit.jupiter.api.Test;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /** @noinspection unchecked*/
-class ValuePatternMatcherTest {
+class OptionalPatternMatcherTest {
 
     @Test
     void matches() {
         // GIVEN
-        ValuePatternMatcher<?,?> cut = ValuePatternMatcher.of(new LongElement(3L), TestBuilder::setE);
+        OptionalPatternMatcher<?> cut = OptionalPatternMatcher.of(
+                ValuePatternMatcher.of(new StringElement("2"), TestBuilder::setE));
+
         List<Element> elements = List.of(
                 new LongElement(1L),
-                new StringElement("2"),
-                new LongElement(3L)
+                new StringElement("2")
         );
 
         // WHEN
         List<? extends MatchResult<?>> matches = cut.matches(elements, false);
 
         // THEN
-        assertEquals(1, matches.size());
-        assertMatch(2, 3, new LongElement(3L), (MatchResult<TestBuilder>) matches.get(0));
+        assertEquals(3, matches.size());
+        matches = matches.stream().sorted(Comparator.comparingInt(MatchResult::getEndElementIdx)).toList();
+        assertMatch(0, 0, null, (MatchResult<TestBuilder>) matches.get(0));
+        assertMatch(1, 1, null, (MatchResult<TestBuilder>) matches.get(1));
+        assertMatch(1, 2, elements.get(1), (MatchResult<TestBuilder>) matches.get(2));
     }
 
     @Test
     void matchesFromStart() {
         // GIVEN
-        ValuePatternMatcher<?,?> cut = ValuePatternMatcher.of(new LongElement(1L), TestBuilder::setE);
+        OptionalPatternMatcher<?> cut = OptionalPatternMatcher.of(
+                ValuePatternMatcher.of(new StringElement("2"), TestBuilder::setE));
+
         List<Element> elements = List.of(
+                new StringElement("2"),
                 new LongElement(1L),
-                new LongElement(3L),
-                new LongElement(1L)
+                new StringElement("2")
         );
 
         // WHEN
         List<? extends MatchResult<?>> matches = cut.matches(elements, true);
 
         // THEN
-        assertEquals(1, matches.size());
-        assertMatch(0, 1, new LongElement(1L), (MatchResult<TestBuilder>) matches.get(0));
+        assertEquals(2, matches.size());
+        matches = matches.stream().sorted(Comparator.comparingInt(MatchResult::getEndElementIdx)).toList();
+        assertMatch(0, 0, null, (MatchResult<TestBuilder>) matches.get(0));
+        assertMatch(0, 1, elements.get(0), (MatchResult<TestBuilder>) matches.get(1));
     }
 
     private void assertMatch(int expStartIdx, int expEndIdx, Element expElement, MatchResult<TestBuilder> result) {
@@ -59,6 +68,6 @@ class ValuePatternMatcherTest {
 
     @Data
     private static class TestBuilder {
-        private LongElement e;
+        private StringElement e;
     }
 }

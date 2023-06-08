@@ -11,34 +11,33 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /** @noinspection unchecked*/
-class ValuePatternMatcherTest {
+class EmptyPatternMatcherTest {
 
     @Test
     void matches() {
         // GIVEN
-        ValuePatternMatcher<?,?> cut = ValuePatternMatcher.of(new LongElement(3L), TestBuilder::setE);
+        EmptyPatternMatcher<TestBuilder> cut = new EmptyPatternMatcher<>();
         List<Element> elements = List.of(
                 new LongElement(1L),
-                new StringElement("2"),
-                new LongElement(3L)
+                new StringElement("2")
         );
 
         // WHEN
         List<? extends MatchResult<?>> matches = cut.matches(elements, false);
 
         // THEN
-        assertEquals(1, matches.size());
-        assertMatch(2, 3, new LongElement(3L), (MatchResult<TestBuilder>) matches.get(0));
+        assertEquals(2, matches.size());
+        assertMatch(0, 0, (MatchResult<TestBuilder>) matches.get(0));
+        assertMatch(1, 1, (MatchResult<TestBuilder>) matches.get(1));
     }
 
     @Test
     void matchesFromStart() {
         // GIVEN
-        ValuePatternMatcher<?,?> cut = ValuePatternMatcher.of(new LongElement(1L), TestBuilder::setE);
+        EmptyPatternMatcher<TestBuilder> cut = new EmptyPatternMatcher<>();
         List<Element> elements = List.of(
                 new LongElement(1L),
-                new LongElement(3L),
-                new LongElement(1L)
+                new StringElement("2")
         );
 
         // WHEN
@@ -46,15 +45,15 @@ class ValuePatternMatcherTest {
 
         // THEN
         assertEquals(1, matches.size());
-        assertMatch(0, 1, new LongElement(1L), (MatchResult<TestBuilder>) matches.get(0));
+        assertMatch(0, 0, (MatchResult<TestBuilder>) matches.get(0));
     }
 
-    private void assertMatch(int expStartIdx, int expEndIdx, Element expElement, MatchResult<TestBuilder> result) {
+    private void assertMatch(int expStartIdx, int expEndIdx, MatchResult<TestBuilder> result) {
         assertEquals(expStartIdx, result.getStartElementIdx());
         assertEquals(expEndIdx, result.getEndElementIdx());
         TestBuilder tb = new TestBuilder();
         result.consume(tb);
-        assertEquals(expElement, tb.getE());
+        assertNull(tb.getE());
     }
 
     @Data

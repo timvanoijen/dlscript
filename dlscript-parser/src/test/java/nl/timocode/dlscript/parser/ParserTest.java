@@ -2,9 +2,10 @@ package nl.timocode.dlscript.parser;
 
 import nl.timocode.dlscript.parser.primitives.DoubleElement;
 import nl.timocode.dlscript.parser.primitives.LongElement;
-import nl.timocode.dlscript.parser.testparsables.MaxTestType;
-import nl.timocode.dlscript.parser.testparsables.MultiplicationTestType;
-import nl.timocode.dlscript.parser.testparsables.SumTestType;
+import nl.timocode.dlscript.parser.testelements.ClassFieldTest;
+import nl.timocode.dlscript.parser.testelements.ClassTest;
+import nl.timocode.dlscript.parser.testparsables.*;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -19,7 +20,9 @@ class ParserTest {
     private final Parser cut = new Parser(List.of(
             new SumTestType(),
             new MultiplicationTestType(),
-            new MaxTestType()
+            new MaxTestType(),
+            new ClassTestType(),
+            new ClassFieldTestType()
     ));
 
     @ParameterizedTest
@@ -51,5 +54,44 @@ class ParserTest {
         // THEN
         assertTrue(result instanceof DoubleElement);
         assertEquals(expectedResult, ((DoubleElement) result).getValue());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "private var String a, private, String, a",
+            "public var Animal animal, public, Animal, animal",
+            "var Object o, private, Object, o",
+    })
+    void parseWithAllTypesOfPatternMatcher(String input, String expectedAccessibility, String expectedType,
+                                           String expectedName) throws IOException {
+        // WHEN
+        Object result = cut.parse(new StringReader(input));
+
+        // THEN
+        assertTrue(result instanceof ClassFieldTest);
+        assertEquals(expectedAccessibility, ((ClassFieldTest) result).getAccessibility());
+        assertEquals(expectedType, ((ClassFieldTest) result).getType());
+        assertEquals(expectedName, ((ClassFieldTest) result).getName());
+    }
+
+    @Test
+    void parseWithRepeatingPatternMatcher() throws IOException {
+        // GIVEN
+        String input = """
+               class MyType {
+                   private var String name
+                   private var Integer value
+                   public var Foo f
+                   var Animal a
+               }
+                """;
+
+        // WHEN
+        Object result = cut.parse(new StringReader(input));
+
+        // THEN
+        assertTrue(result instanceof ClassTest);
+        assertEquals("name", ((ClassTest) result).getName());
+        assertEquals(4, ((ClassTest) result).getFields().size());
     }
 }

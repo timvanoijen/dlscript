@@ -80,6 +80,20 @@ class SequencePatternMatcherTest {
         assertMatch(3, 6, List.of(1L, 2L, 1L), (MatchResult<TestBuilder>) matches.get(2));
     }
 
+    @Test
+    void matchesFromStart() {
+        // GIVEN
+        SequencePatternMatcher<?> cut = createSequencePatternMatcher(1, 2);
+        List<? extends Element> elements = createElements(1, 2, 1, 2, 1);
+
+        // WHEN
+        List<? extends MatchResult<?>> matches = cut.matches(elements, true);
+
+        // THEN
+        assertEquals(1, matches.size());
+        assertMatch(0, 2, List.of(1L, 2L), (MatchResult<TestBuilder>) matches.get(0));
+    }
+
     private SequencePatternMatcher<?> createSequencePatternMatcher(Integer... input) {
         List<ValuePatternMatcher<LongElement, TestBuilder>> matchers = Arrays.stream(input)
                 .map(LongElement::new)

@@ -28,4 +28,26 @@ public class MatchResult<C> {
     public void consume(C consumer) {
         acceptResultCollector.accept(consumer);
     }
+
+    public MatchResult<C> followedBy(MatchResult<C> next) {
+        assert next.startElementIdx == this.endElementIdx;
+        return new MatchResult<>(next.isFullMatch, this.startElementIdx, next.endElementIdx, c -> {
+            this.consume(c);
+            next.consume(c);
+        });
+    }
+
+    public MatchResult<C> shiftElementIndices(int n) {
+        return new MatchResult<>(isFullMatch, this.startElementIdx + n, this.endElementIdx + n,
+                acceptResultCollector);
+    }
+
+    @Override
+    public String toString() {
+        return "MatchResult{" +
+                "isFullMatch=" + isFullMatch +
+                ", startElementIdx=" + startElementIdx +
+                ", endElementIdx=" + endElementIdx +
+                '}';
+    }
 }

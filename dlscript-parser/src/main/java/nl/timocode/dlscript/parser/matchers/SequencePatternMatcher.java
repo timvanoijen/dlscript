@@ -1,5 +1,6 @@
 package nl.timocode.dlscript.parser.matchers;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import nl.timocode.dlscript.parser.Element;
@@ -7,7 +8,7 @@ import nl.timocode.dlscript.parser.Element;
 import java.util.*;
 import java.util.function.Consumer;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class SequencePatternMatcher<C> implements PatternMatcher<C> {
 
@@ -53,6 +54,7 @@ public class SequencePatternMatcher<C> implements PatternMatcher<C> {
                     intermediateResults.add(new ResultState<>(newInnerConsumers,
                             matcherIdx + 1, newStartIdx, newEndIdx));
                 }
+                //TODO: if partial match.... then also make a partial match for the SequencePatternMatcher
             }
         }
 
