@@ -91,7 +91,7 @@ class ParserTest {
 
         // THEN
         assertTrue(result instanceof ClassTest);
-        assertEquals("name", ((ClassTest) result).getName());
+        assertEquals("MyType", ((ClassTest) result).getName());
         assertEquals(4, ((ClassTest) result).getFields().size());
     }
 }
