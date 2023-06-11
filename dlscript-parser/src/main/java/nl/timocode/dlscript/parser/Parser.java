@@ -1,7 +1,6 @@
 package nl.timocode.dlscript.parser;
 
 import nl.timocode.dlscript.parser.matchers.MatchResult;
-import nl.timocode.dlscript.parser.primitives.DoubleElement;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -14,10 +13,9 @@ public final class Parser {
 
     private final List<Parsable<?,?>> elementTypes;
 
-    public Parser(List<Parsable<?,?>> elementTypes) {
-        elementTypes = new ArrayList<>(elementTypes);
-        elementTypes.add(new DoubleElement.Type());
-        this.elementTypes = elementTypes;
+    public Parser() {
+        elementTypes = new ArrayList<>();
+        ServiceLoader.load(Parsable.class).iterator().forEachRemaining(elementTypes::add);
     }
 
     record TypeWithMatch<E extends Element, B extends ElementBuilder<E>>(

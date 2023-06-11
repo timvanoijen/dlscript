@@ -4,26 +4,18 @@ import nl.timocode.dlscript.parser.primitives.DoubleElement;
 import nl.timocode.dlscript.parser.primitives.LongElement;
 import nl.timocode.dlscript.parser.testelements.ClassFieldTest;
 import nl.timocode.dlscript.parser.testelements.ClassTest;
-import nl.timocode.dlscript.parser.testparsables.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParserTest {
 
-    private final Parser cut = new Parser(List.of(
-            new SumTestType(),
-            new MultiplicationTestType(),
-            new MaxTestType(),
-            new ClassTestType(),
-            new ClassFieldTestType()
-    ));
+    private final Parser cut = new Parser();
 
     @ParameterizedTest
     @CsvSource({
