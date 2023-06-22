@@ -36,7 +36,7 @@ public class RepeatingPatternMatcher<C> implements PatternMatcher<C> {
                 }
                 curMatch = nextMatch;
                 if (fromStart) {
-                    break;
+                    return finalResults;
                 }
             }
         }
