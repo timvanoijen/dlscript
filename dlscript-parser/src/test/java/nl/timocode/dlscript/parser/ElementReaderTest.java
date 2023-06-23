@@ -14,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ElementReaderTest {
 
+    private final Parser cut = new Parser();
+
     @Test
     void read() {
         // GIVEN
