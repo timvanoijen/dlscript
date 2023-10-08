@@ -38,12 +38,13 @@ public final class ElementReader {
                 }
                 break;
             } else {
-                // Letter or digit: return as string or long per group
+                // Letter or digit: return as string or long per group. Groups that start with alphanumeric are allowed
+                // to contain digits as well. Groups that start with a digit may only contain digits.
                 boolean isAlpha = !Character.isDigit(currentChar);
-                if (Objects.equals(isAlpha, isDigit)) {
+                if (Boolean.TRUE.equals(isDigit) && isAlpha) {
                     break;
                 }
-                isDigit = !isAlpha;
+                isDigit = !Boolean.FALSE.equals(isDigit) && !isAlpha;
                 s.append((char)currentChar);
             }
             currentChar = reader.read();
