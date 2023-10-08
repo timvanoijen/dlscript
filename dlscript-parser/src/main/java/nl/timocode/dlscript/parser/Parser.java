@@ -61,13 +61,15 @@ public final class Parser {
                 int firstFullMatchIdx = firstFullMatchIdxOpt.getAsInt();
                 TypeWithMatch<?,?> selected = matches.get(firstFullMatchIdx);
 
-                // Find out if there is a partial matchResult of the same type or from a type with a higher priority
+                // Find out if there is a partial matchResult with a higher priority that overlaps with the first full
+                // match.
                 boolean potentialBetterCandidate = elementReader.hasNext() &&
                         IntStream.range(0, firstFullMatchIdx)
-                            .mapToObj(i -> matches.get(i).type())
-                            .anyMatch(partialMatchType ->
-                                    partialMatchType.equals(selected.type) ||
-                                    partialMatchType.parsePriority() > selected.type().parsePriority());
+                            .mapToObj(matches::get)
+                            .anyMatch(partialMt ->
+                                partialMt.matchResult().getStartElementIdx() < selected.matchResult().getEndElementIdx() &&
+                                partialMt.type().parsePriority() > selected.type().parsePriority()
+                            );
 
                 if (potentialBetterCandidate) {
                     break;
