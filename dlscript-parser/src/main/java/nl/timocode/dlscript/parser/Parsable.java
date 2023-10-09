@@ -8,6 +8,6 @@ public interface Parsable<E extends Element, B extends ElementBuilder<E>> {
     B createBuilder();
 
     default int parsePriority() {
-        return Integer.MAX_VALUE;
+        return 0;
     }
 }

@@ -41,5 +41,10 @@ public class DoubleElement implements Element {
                 return new DoubleElement(value);
             }
         }
+
+        @Override
+        public int parsePriority() {
+            return Integer.MAX_VALUE;
+        }
     }
 }

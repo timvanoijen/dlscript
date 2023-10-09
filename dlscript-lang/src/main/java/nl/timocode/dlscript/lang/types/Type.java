@@ -51,16 +51,10 @@ public final class Type implements Element {
                     TypePatternMatcher.of(StringElement.class, Builder::setNameElement),
                     OptionalPatternMatcher.of(
                             SequencePatternMatcher.of(
-                                ValuePatternMatcher.of(new StringElement("includes")),
-                                TypePatternMatcher.of(StringElement.class, Builder::addChildType),
-                                OptionalPatternMatcher.of(
+                                    ValuePatternMatcher.of(new StringElement("includes")),
                                     RepeatingPatternMatcher.of(
-                                            SequencePatternMatcher.of(
-                                                    ValuePatternMatcher.of(new StringElement(",")),
-                                                    TypePatternMatcher.of(StringElement.class, Builder::addChildType)
-                                            )
-                                    )
-                                )
+                                            TypePatternMatcher.of(StringElement.class, Builder::addChildType)
+                                    ).withDelimiter(",")
                             )
                     ),
                     // Fields

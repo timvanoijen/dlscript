@@ -3,6 +3,7 @@ package nl.timocode.dlscript.parser.matchers;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import nl.timocode.dlscript.parser.Element;
+import nl.timocode.dlscript.parser.primitives.StringElement;
 
 import java.util.*;
 
@@ -14,6 +15,24 @@ public class RepeatingPatternMatcher<C> implements PatternMatcher<C> {
 
     public static <C> RepeatingPatternMatcher<C> of(PatternMatcher<C> innerMatcher) {
         return new RepeatingPatternMatcher<>(innerMatcher);
+    }
+
+    public PatternMatcher<C> withDelimiter(String delimiter) {
+        return withDelimiter(ValuePatternMatcher.of(new StringElement(delimiter)));
+    }
+
+    public PatternMatcher<C> withDelimiter(PatternMatcher<C> delimiterMatcher) {
+        return SequencePatternMatcher.of(
+                matcher,
+                OptionalPatternMatcher.of(
+                        RepeatingPatternMatcher.of(
+                                SequencePatternMatcher.of(
+                                        delimiterMatcher,
+                                        matcher
+                                )
+                        )
+                )
+        );
     }
 
     @Override
