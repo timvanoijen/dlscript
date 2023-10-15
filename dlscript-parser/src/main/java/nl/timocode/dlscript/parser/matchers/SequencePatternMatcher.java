@@ -39,6 +39,7 @@ public class SequencePatternMatcher<C> implements PatternMatcher<C> {
                 continue;
             } else if (intermediateResult.endIdx == elements.size()) {
                 finalResults.add(MatchResult.partial(intermediateResult.startIdx));
+            } else if (intermediateResult.endIdx > elements.size()) {
                 continue;
             }
 
