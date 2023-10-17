@@ -7,7 +7,8 @@ import nl.timocode.dlscript.lang.expressions.Expression;
 import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.*;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.CharToken;
+import nl.timocode.dlscript.parser.primitives.IdentifierToken;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class Instantiation implements Expression {
     @Data
     public static class Builder implements ElementBuilder<Instantiation> {
 
-        private StringElement type;
+        private IdentifierToken type;
         private final Map<String, Expression> fieldValues = new HashMap<>();
 
         public void addFieldAssignment(Assignment assignment) {
@@ -40,16 +41,16 @@ public class Instantiation implements Expression {
         @Override
         public PatternMatcher<Builder> patternMatcher() {
             return SequencePatternMatcher.of(
-                TypePatternMatcher.of(StringElement.class, Builder::setType),
-                ValuePatternMatcher.of(new StringElement("(")),
+                TypePatternMatcher.of(IdentifierToken.class, Builder::setType),
+                ValuePatternMatcher.of(new CharToken('(')),
                 OptionalPatternMatcher.of(
                     RepeatingPatternMatcher.of(
                         SequencePatternMatcher.of(
                             TypePatternMatcher.of(Assignment.NoInstantiation.class, Builder::addFieldAssignment)
                         )
-                    ).withDelimiter(",")
+                    ).withDelimiter(',')
                 ),
-                ValuePatternMatcher.of(new StringElement(")"))
+                ValuePatternMatcher.of(new CharToken(')'))
             );
         }
 

@@ -8,7 +8,8 @@ import nl.timocode.dlscript.lang.types.Variable;
 import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.*;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.CharToken;
+import nl.timocode.dlscript.parser.primitives.IdentifierToken;
 
 @AllArgsConstructor
 @Getter
@@ -35,8 +36,8 @@ public class Assignment implements Statement, Expression {
     public static class Builder implements ElementBuilder<Assignment> {
 
         private Variable variable;
-        private StringElement type;
-        private StringElement name;
+        private IdentifierToken type;
+        private IdentifierToken name;
         private Expression expression;
 
         @Override
@@ -56,12 +57,12 @@ public class Assignment implements Statement, Expression {
             return AnyPatternMatcher.of(
                     SequencePatternMatcher.of(
                             TypePatternMatcher.of(Variable.class, Builder::setVariable),
-                            ValuePatternMatcher.of(new StringElement("=")),
+                            ValuePatternMatcher.of(new CharToken('=')),
                             TypePatternMatcher.of(Expression.class, Builder::setExpression)
                     ),
                     SequencePatternMatcher.of(
-                            TypePatternMatcher.of(StringElement.class, Builder::setName),
-                            ValuePatternMatcher.of(new StringElement("=")),
+                            TypePatternMatcher.of(IdentifierToken.class, Builder::setName),
+                            ValuePatternMatcher.of(new CharToken('=')),
                             TypePatternMatcher.of(Expression.class, Builder::setExpression)
                     )
             );

@@ -1,4 +1,6 @@
 package nl.timocode.dlscript.lang.statements;
 
-public interface Statement {
+import nl.timocode.dlscript.parser.Element;
+
+public interface Statement extends Element {
 }

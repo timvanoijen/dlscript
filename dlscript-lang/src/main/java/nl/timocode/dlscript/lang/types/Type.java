@@ -7,7 +7,8 @@ import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.*;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.CharToken;
+import nl.timocode.dlscript.parser.primitives.IdentifierToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,25 +20,31 @@ public final class Type implements Element {
     private final String name;
     private final List<Variable> fields;
     private final List<String> childTypes;
+    private final List<Method> methods;
 
     @Data
     public static class Builder implements ElementBuilder<Type> {
 
-        private StringElement nameElement;
+        private IdentifierToken nameElement;
         private final List<Variable> fields = new ArrayList<>();
         private final List<String> childTypes = new ArrayList<>();
+        private final List<Method> methods = new ArrayList<>();
 
         public void addField(Variable field) {
             fields.add(field);
         }
 
-        public void addChildType(StringElement typeNameElement) {
+        public void addChildType(IdentifierToken typeNameElement) {
             childTypes.add(typeNameElement.getValue());
+        }
+
+        public void addMethod(Method method) {
+            methods.add(method);
         }
 
         @Override
         public Type build() {
-            return new Type(nameElement.getValue(), List.copyOf(fields), List.copyOf(childTypes));
+            return new Type(nameElement.getValue(), List.copyOf(fields), List.copyOf(childTypes), List.copyOf(methods));
         }
     }
 
@@ -47,24 +54,27 @@ public final class Type implements Element {
         public PatternMatcher<Builder> patternMatcher() {
             return SequencePatternMatcher.of(
                     // Header
-                    ValuePatternMatcher.of(new StringElement("type")),
-                    TypePatternMatcher.of(StringElement.class, Builder::setNameElement),
+                    ValuePatternMatcher.of(new IdentifierToken("type")),
+                    TypePatternMatcher.of(IdentifierToken.class, Builder::setNameElement),
                     OptionalPatternMatcher.of(
                             SequencePatternMatcher.of(
-                                    ValuePatternMatcher.of(new StringElement("includes")),
+                                    ValuePatternMatcher.of(new IdentifierToken("includes")),
                                     RepeatingPatternMatcher.of(
-                                            TypePatternMatcher.of(StringElement.class, Builder::addChildType)
-                                    ).withDelimiter(",")
+                                            TypePatternMatcher.of(IdentifierToken.class, Builder::addChildType)
+                                    ).withDelimiter(',')
                             )
                     ),
-                    // Fields
-                    ValuePatternMatcher.of(new StringElement("{")),
+                    // Fields and methods
+                    ValuePatternMatcher.of(new CharToken('{')),
                     OptionalPatternMatcher.of(
                         RepeatingPatternMatcher.of(
-                                TypePatternMatcher.of(Variable.class, Builder::addField)
+                                AnyPatternMatcher.of(
+                                    TypePatternMatcher.of(Variable.class, Builder::addField),
+                                    TypePatternMatcher.of(Method.class, Builder::addMethod)
+                                )
                         )
                     ),
-                    ValuePatternMatcher.of(new StringElement("}"))
+                    ValuePatternMatcher.of(new CharToken('}'))
             );
         }
 
@@ -73,5 +83,4 @@ public final class Type implements Element {
             return new Builder();
         }
     }
-
 }

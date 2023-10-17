@@ -1,7 +1,10 @@
-nl.timocode.dlscript.lang.expressions.DoubleLiteralExpression$Type
-nl.timocode.dlscript.lang.expressions.LongLiteralExpression$Type
+nl.timocode.dlscript.lang.expressions.DoubleLiteral$Type
+nl.timocode.dlscript.lang.expressions.LongLiteral$Type
+nl.timocode.dlscript.lang.expressions.StringLiteral$Type
 nl.timocode.dlscript.lang.types.Type$_Type
 nl.timocode.dlscript.lang.types.Variable$Type
+nl.timocode.dlscript.lang.types.Method$Type
+nl.timocode.dlscript.lang.types.MethodParameter$Type
 nl.timocode.dlscript.lang.statements.Assignment$Type
 nl.timocode.dlscript.lang.statements.Instantiation$Type
 nl.timocode.dlscript.lang.types.operations.DivOperationType

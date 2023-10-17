@@ -7,30 +7,30 @@ import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
-import nl.timocode.dlscript.parser.primitives.LongElement;
+import nl.timocode.dlscript.parser.primitives.LongToken;
 
 @AllArgsConstructor
 @Getter
-public class LongLiteralExpression implements Expression {
+public class LongLiteral implements Expression {
 
     private final long value;
 
     @Data
-    public static class Builder implements ElementBuilder<LongLiteralExpression> {
+    public static class Builder implements ElementBuilder<LongLiteral> {
 
-        private LongElement element;
+        private LongToken element;
 
         @Override
-        public LongLiteralExpression build() {
-            return new LongLiteralExpression(element.getValue());
+        public LongLiteral build() {
+            return new LongLiteral(element.getValue());
         }
     }
 
-    public static class Type implements Parsable<LongLiteralExpression, LongLiteralExpression.Builder> {
+    public static class Type implements Parsable<LongLiteral, LongLiteral.Builder> {
 
         @Override
         public PatternMatcher<Builder> patternMatcher() {
-            return TypePatternMatcher.of(LongElement.class, Builder::setElement);
+            return TypePatternMatcher.of(LongToken.class, Builder::setElement);
         }
 
         @Override

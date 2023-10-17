@@ -7,7 +7,7 @@ import nl.timocode.dlscript.lang.expressions.Expression;
 import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.*;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.CharToken;
 
 @AllArgsConstructor
 @Getter
@@ -37,13 +37,13 @@ public class BinaryOperation implements Expression {
 
     public abstract static class Type implements Parsable<BinaryOperation, BinaryOperation.Builder> {
 
-        protected abstract String getOperator();
+        protected abstract char getOperator();
 
         @Override
         public PatternMatcher<BinaryOperation.Builder> patternMatcher() {
             return SequencePatternMatcher.of(
                 TypePatternMatcher.of(Expression.class, Builder::setLeft),
-                ValuePatternMatcher.of(new StringElement(getOperator())),
+                ValuePatternMatcher.of(new CharToken(getOperator())),
                 TypePatternMatcher.of(Expression.class, Builder::setRight)
             );
         }

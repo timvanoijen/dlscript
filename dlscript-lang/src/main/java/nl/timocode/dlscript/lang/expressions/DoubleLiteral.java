@@ -7,30 +7,30 @@ import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.PatternMatcher;
 import nl.timocode.dlscript.parser.matchers.TypePatternMatcher;
-import nl.timocode.dlscript.parser.primitives.DoubleElement;
+import nl.timocode.dlscript.parser.primitives.DoubleToken;
 
 @AllArgsConstructor
 @Getter
-public class DoubleLiteralExpression implements Expression {
+public class DoubleLiteral implements Expression {
 
     private final double value;
 
     @Data
-    public static class Builder implements ElementBuilder<DoubleLiteralExpression> {
+    public static class Builder implements ElementBuilder<DoubleLiteral> {
 
-        private DoubleElement element;
+        private DoubleToken element;
 
         @Override
-        public DoubleLiteralExpression build() {
-            return new DoubleLiteralExpression(element.getValue());
+        public DoubleLiteral build() {
+            return new DoubleLiteral(element.getValue());
         }
     }
 
-    public static class Type implements Parsable<DoubleLiteralExpression, DoubleLiteralExpression.Builder> {
+    public static class Type implements Parsable<DoubleLiteral, DoubleLiteral.Builder> {
 
         @Override
         public PatternMatcher<Builder> patternMatcher() {
-            return TypePatternMatcher.of(DoubleElement.class, Builder::setElement);
+            return TypePatternMatcher.of(DoubleToken.class, Builder::setElement);
         }
 
         @Override

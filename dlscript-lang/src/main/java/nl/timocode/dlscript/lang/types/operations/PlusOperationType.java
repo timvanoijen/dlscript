@@ -3,7 +3,7 @@ package nl.timocode.dlscript.lang.types.operations;
 public class PlusOperationType extends BinaryOperation.Type {
 
     @Override
-    protected String getOperator() {
-        return "+";
+    protected char getOperator() {
+        return '+';
     }
 }
