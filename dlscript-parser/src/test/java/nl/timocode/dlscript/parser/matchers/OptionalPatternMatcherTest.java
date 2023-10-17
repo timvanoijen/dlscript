@@ -2,8 +2,8 @@ package nl.timocode.dlscript.parser.matchers;
 
 import lombok.Data;
 import nl.timocode.dlscript.parser.Element;
-import nl.timocode.dlscript.parser.primitives.LongElement;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.LongToken;
+import nl.timocode.dlscript.parser.primitives.StringLiteralToken;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -18,11 +18,11 @@ class OptionalPatternMatcherTest {
     void matches() {
         // GIVEN
         OptionalPatternMatcher<?> cut = OptionalPatternMatcher.of(
-                ValuePatternMatcher.of(new StringElement("2"), TestBuilder::setE));
+                ValuePatternMatcher.of(new StringLiteralToken("2"), TestBuilder::setE));
 
         List<Element> elements = List.of(
-                new LongElement(1L),
-                new StringElement("2")
+                new LongToken(1L),
+                new StringLiteralToken("2")
         );
 
         // WHEN
@@ -40,12 +40,12 @@ class OptionalPatternMatcherTest {
     void matchesFromStart() {
         // GIVEN
         OptionalPatternMatcher<?> cut = OptionalPatternMatcher.of(
-                ValuePatternMatcher.of(new StringElement("2"), TestBuilder::setE));
+                ValuePatternMatcher.of(new StringLiteralToken("2"), TestBuilder::setE));
 
         List<Element> elements = List.of(
-                new StringElement("2"),
-                new LongElement(1L),
-                new StringElement("2")
+                new StringLiteralToken("2"),
+                new LongToken(1L),
+                new StringLiteralToken("2")
         );
 
         // WHEN
@@ -68,6 +68,6 @@ class OptionalPatternMatcherTest {
 
     @Data
     private static class TestBuilder {
-        private StringElement e;
+        private StringLiteralToken e;
     }
 }

@@ -2,8 +2,8 @@ package nl.timocode.dlscript.parser.matchers;
 
 import lombok.Data;
 import nl.timocode.dlscript.parser.Element;
-import nl.timocode.dlscript.parser.primitives.LongElement;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.LongToken;
+import nl.timocode.dlscript.parser.primitives.StringLiteralToken;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -18,8 +18,8 @@ class EmptyPatternMatcherTest {
         // GIVEN
         EmptyPatternMatcher<TestBuilder> cut = new EmptyPatternMatcher<>();
         List<Element> elements = List.of(
-                new LongElement(1L),
-                new StringElement("2")
+                new LongToken(1L),
+                new StringLiteralToken("2")
         );
 
         // WHEN
@@ -36,8 +36,8 @@ class EmptyPatternMatcherTest {
         // GIVEN
         EmptyPatternMatcher<TestBuilder> cut = new EmptyPatternMatcher<>();
         List<Element> elements = List.of(
-                new LongElement(1L),
-                new StringElement("2")
+                new LongToken(1L),
+                new StringLiteralToken("2")
         );
 
         // WHEN
@@ -58,6 +58,6 @@ class EmptyPatternMatcherTest {
 
     @Data
     private static class TestBuilder {
-        private LongElement e;
+        private LongToken e;
     }
 }

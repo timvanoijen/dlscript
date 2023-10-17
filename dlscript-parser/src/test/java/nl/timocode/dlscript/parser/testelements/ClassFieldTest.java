@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.ElementBuilder;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.IdentifierToken;
 
 @AllArgsConstructor
 @Getter
@@ -19,9 +19,9 @@ public class ClassFieldTest implements Element {
     @Data
     public static class Builder implements ElementBuilder<ClassFieldTest> {
 
-        private StringElement accessibility = new StringElement("private");
-        private StringElement type;
-        private StringElement name;
+        private IdentifierToken accessibility = new IdentifierToken("private");
+        private IdentifierToken type;
+        private IdentifierToken name;
 
         @Override
         public ClassFieldTest build() {

@@ -2,7 +2,7 @@ package nl.timocode.dlscript.parser.matchers;
 
 import lombok.Getter;
 import nl.timocode.dlscript.parser.Element;
-import nl.timocode.dlscript.parser.primitives.LongElement;
+import nl.timocode.dlscript.parser.primitives.LongToken;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -95,8 +95,8 @@ class SequencePatternMatcherTest {
     }
 
     private SequencePatternMatcher<?> createSequencePatternMatcher(Integer... input) {
-        List<ValuePatternMatcher<LongElement, TestBuilder>> matchers = Arrays.stream(input)
-                .map(LongElement::new)
+        List<ValuePatternMatcher<LongToken, TestBuilder>> matchers = Arrays.stream(input)
+                .map(LongToken::new)
                 .map(e -> ValuePatternMatcher.of(e, TestBuilder::addElement))
                 .toList();
         return SequencePatternMatcher.of(matchers.toArray(new ValuePatternMatcher[0]));
@@ -106,7 +106,7 @@ class SequencePatternMatcherTest {
         List<Integer> inputList = List.of(input);
 
         return inputList.stream()
-                .map(LongElement::new)
+                .map(LongToken::new)
                 .toList();
     }
 
@@ -122,7 +122,7 @@ class SequencePatternMatcherTest {
     private static class TestBuilder {
         private final List<Long> values = new ArrayList<>();
 
-        public void addElement(LongElement value) {
+        public void addElement(LongToken value) {
             values.add(value.getValue());
         }
     }

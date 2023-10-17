@@ -2,8 +2,9 @@ package nl.timocode.dlscript.parser.matchers;
 
 import lombok.Getter;
 import nl.timocode.dlscript.parser.Element;
-import nl.timocode.dlscript.parser.primitives.LongElement;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.CharToken;
+import nl.timocode.dlscript.parser.primitives.LongToken;
+import nl.timocode.dlscript.parser.primitives.StringLiteralToken;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ class RepeatingPatternMatcherTest {
     void matches() {
         // GIVEN
         RepeatingPatternMatcher<?> cut = RepeatingPatternMatcher.of(
-                TypePatternMatcher.of(LongElement.class, TestBuilder::addElement));
+                TypePatternMatcher.of(LongToken.class, TestBuilder::addElement));
         List<? extends Element> elements = createElements(0, 1, "s", 1);
 
         // WHEN
@@ -37,7 +38,7 @@ class RepeatingPatternMatcherTest {
     void matchesFirstMatchHalfway() {
         // GIVEN
         RepeatingPatternMatcher<?> cut = RepeatingPatternMatcher.of(
-                TypePatternMatcher.of(LongElement.class, TestBuilder::addElement));
+                TypePatternMatcher.of(LongToken.class, TestBuilder::addElement));
         List<? extends Element> elements = createElements("s", 0, 1, "t", 1);
 
         // WHEN
@@ -55,7 +56,7 @@ class RepeatingPatternMatcherTest {
     void matchesFromStart() {
         // GIVEN
         RepeatingPatternMatcher<?> cut = RepeatingPatternMatcher.of(
-                TypePatternMatcher.of(LongElement.class, TestBuilder::addElement));
+                TypePatternMatcher.of(LongToken.class, TestBuilder::addElement));
         List<? extends Element> elements = createElements(0, 1, "s", 1);
 
         // WHEN
@@ -70,7 +71,7 @@ class RepeatingPatternMatcherTest {
     void matchesFromStartTillEnd() {
         // GIVEN
         RepeatingPatternMatcher<?> cut = RepeatingPatternMatcher.of(
-                TypePatternMatcher.of(LongElement.class, TestBuilder::addElement));
+                TypePatternMatcher.of(LongToken.class, TestBuilder::addElement));
         List<? extends Element> elements = createElements(0, 1);
 
         // WHEN
@@ -82,12 +83,37 @@ class RepeatingPatternMatcherTest {
         assertEquals(MatchResult.partial(0), matches.get(1));
     }
 
+    @Test
+    void matchesWithDelimiter() {
+        // GIVEN
+        PatternMatcher<?> cut = RepeatingPatternMatcher.of(
+                TypePatternMatcher.of(LongToken.class, TestBuilder::addElement))
+                .withDelimiter(',');
+
+        List<? extends Element> elements = createElements(0, ',', 1, ',', 2);
+
+        // WHEN
+        List<? extends MatchResult<?>> matches = cut.matches(elements, true);
+
+        // THEN
+        assertEquals(3, matches.size());
+        assertMatch(0, 5, List.of(0L, 1L, 2L), (MatchResult<TestBuilder>) matches.get(1));
+        assertEquals(MatchResult.partial(0), matches.get(0));
+    }
+
     private List<? extends Element> createElements(Object... input) {
         List<Object> inputList = List.of(input);
 
         return inputList.stream()
-                .map(o -> o instanceof Integer ? new LongElement((Integer)o) : new StringElement((String)o))
-                .toList();
+                .map(o -> {
+                    if (o instanceof Integer) {
+                        return new LongToken((Integer) o);
+                    } else if (o instanceof Character) {
+                        return new CharToken((Character) o);
+                    } else {
+                        return new StringLiteralToken(o.toString());
+                    }
+                }).toList();
     }
 
     private void assertMatch(int expStartIdx, int expEndIdx, List<Long> expValues, MatchResult<TestBuilder> result) {
@@ -102,7 +128,7 @@ class RepeatingPatternMatcherTest {
     private static class TestBuilder {
         private final List<Long> values = new ArrayList<>();
 
-        public void addElement(LongElement value) {
+        public void addElement(LongToken value) {
             values.add(value.getValue());
         }
     }

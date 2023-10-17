@@ -2,8 +2,8 @@ package nl.timocode.dlscript.parser.matchers;
 
 import lombok.Data;
 import nl.timocode.dlscript.parser.Element;
-import nl.timocode.dlscript.parser.primitives.LongElement;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.LongToken;
+import nl.timocode.dlscript.parser.primitives.StringLiteralToken;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
@@ -18,14 +18,14 @@ class AnyPatternMatcherTest {
     void matches() {
         // GIVEN
         AnyPatternMatcher<?> cut = AnyPatternMatcher.of(
-                ValuePatternMatcher.of(new StringElement("2"), TestBuilder::setE),
-                TypePatternMatcher.of(LongElement.class, TestBuilder::setE));
+                ValuePatternMatcher.of(new StringLiteralToken("2"), TestBuilder::setE),
+                TypePatternMatcher.of(LongToken.class, TestBuilder::setE));
 
         List<Element> elements = List.of(
-                new LongElement(1L),
-                new StringElement("2"),
-                new LongElement(3L),
-                new StringElement("4")
+                new LongToken(1L),
+                new StringLiteralToken("2"),
+                new LongToken(3L),
+                new StringLiteralToken("4")
         );
 
         // WHEN
@@ -43,13 +43,13 @@ class AnyPatternMatcherTest {
     void matchesFromStart() {
         // GIVEN
         AnyPatternMatcher<?> cut = AnyPatternMatcher.of(
-                ValuePatternMatcher.of(new StringElement("2"), TestBuilder::setE),
-                TypePatternMatcher.of(LongElement.class, TestBuilder::setE));
+                ValuePatternMatcher.of(new StringLiteralToken("2"), TestBuilder::setE),
+                TypePatternMatcher.of(LongToken.class, TestBuilder::setE));
 
         List<Element> elements = List.of(
-                new LongElement(1L),
-                new StringElement("2"),
-                new LongElement(3L)
+                new LongToken(1L),
+                new StringLiteralToken("2"),
+                new LongToken(3L)
         );
 
         // WHEN

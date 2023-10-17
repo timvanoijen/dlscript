@@ -4,28 +4,28 @@ import lombok.Data;
 import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.*;
-import nl.timocode.dlscript.parser.primitives.LongElement;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.CharToken;
+import nl.timocode.dlscript.parser.primitives.LongToken;
 
-public class SumTestType implements Parsable<LongElement, SumTestType.Builder> {
+public class SumTestType implements Parsable<LongToken, SumTestType.Builder> {
 
     @Data
-    public static class Builder implements ElementBuilder<LongElement> {
-        private LongElement left;
-        private LongElement right;
+    public static class Builder implements ElementBuilder<LongToken> {
+        private LongToken left;
+        private LongToken right;
 
         @Override
-        public LongElement build() {
-            return new LongElement(left.getValue() + right.getValue());
+        public LongToken build() {
+            return new LongToken(left.getValue() + right.getValue());
         }
     }
 
     @Override
     public PatternMatcher<Builder> patternMatcher() {
         return SequencePatternMatcher.of(
-                TypePatternMatcher.of(LongElement.class, Builder::setLeft),
-                ValuePatternMatcher.of(new StringElement("+")),
-                TypePatternMatcher.of(LongElement.class, Builder::setRight));
+                TypePatternMatcher.of(LongToken.class, Builder::setLeft),
+                ValuePatternMatcher.of(new CharToken('+')),
+                TypePatternMatcher.of(LongToken.class, Builder::setRight));
     }
 
     @Override

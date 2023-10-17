@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.ToString;
 import nl.timocode.dlscript.parser.Element;
 import nl.timocode.dlscript.parser.ElementBuilder;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.IdentifierToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class ClassTest implements Element {
     public static class Builder implements ElementBuilder<ClassTest> {
 
         private final List<ClassFieldTest> fields = new ArrayList<>();
-        private StringElement name;
+        private IdentifierToken name;
 
         public void addField(ClassFieldTest field) {
             fields.add(field);

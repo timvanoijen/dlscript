@@ -3,7 +3,7 @@ package nl.timocode.dlscript.parser.matchers;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import nl.timocode.dlscript.parser.Element;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.CharToken;
 
 import java.util.*;
 
@@ -17,8 +17,8 @@ public class RepeatingPatternMatcher<C> implements PatternMatcher<C> {
         return new RepeatingPatternMatcher<>(innerMatcher);
     }
 
-    public PatternMatcher<C> withDelimiter(String delimiter) {
-        return withDelimiter(ValuePatternMatcher.of(new StringElement(delimiter)));
+    public PatternMatcher<C> withDelimiter(char delimiter) {
+        return withDelimiter(ValuePatternMatcher.of(new CharToken(delimiter)));
     }
 
     public PatternMatcher<C> withDelimiter(PatternMatcher<C> delimiterMatcher) {

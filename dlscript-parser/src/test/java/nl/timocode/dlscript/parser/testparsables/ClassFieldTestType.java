@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.*;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.IdentifierToken;
 import nl.timocode.dlscript.parser.testelements.ClassFieldTest;
 
 @AllArgsConstructor
@@ -16,14 +16,14 @@ public class ClassFieldTestType implements Parsable<ClassFieldTest, ClassFieldTe
         return SequencePatternMatcher.of(
                 OptionalPatternMatcher.of(
                         AnyPatternMatcher.of(
-                                ValuePatternMatcher.of(new StringElement("private"), ClassFieldTest.Builder::setAccessibility),
-                                ValuePatternMatcher.of(new StringElement("protected"), ClassFieldTest.Builder::setAccessibility),
-                                ValuePatternMatcher.of(new StringElement("public"), ClassFieldTest.Builder::setAccessibility)
+                                ValuePatternMatcher.of(new IdentifierToken("private"), ClassFieldTest.Builder::setAccessibility),
+                                ValuePatternMatcher.of(new IdentifierToken("protected"), ClassFieldTest.Builder::setAccessibility),
+                                ValuePatternMatcher.of(new IdentifierToken("public"), ClassFieldTest.Builder::setAccessibility)
                         )
                 ),
-                ValuePatternMatcher.of(new StringElement("var")),
-                TypePatternMatcher.of(StringElement.class, ClassFieldTest.Builder::setType),
-                TypePatternMatcher.of(StringElement.class, ClassFieldTest.Builder::setName)
+                ValuePatternMatcher.of(new IdentifierToken("var")),
+                TypePatternMatcher.of(IdentifierToken.class, ClassFieldTest.Builder::setType),
+                TypePatternMatcher.of(IdentifierToken.class, ClassFieldTest.Builder::setName)
         );
     }
 

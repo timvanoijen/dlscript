@@ -1,7 +1,7 @@
 package nl.timocode.dlscript.parser;
 
-import nl.timocode.dlscript.parser.primitives.DoubleElement;
-import nl.timocode.dlscript.parser.primitives.LongElement;
+import nl.timocode.dlscript.parser.primitives.DoubleToken;
+import nl.timocode.dlscript.parser.primitives.LongToken;
 import nl.timocode.dlscript.parser.testelements.ClassFieldTest;
 import nl.timocode.dlscript.parser.testelements.ClassTest;
 import org.junit.jupiter.api.Test;
@@ -30,8 +30,8 @@ class ParserTest {
         Object result = cut.parse(new StringReader(input));
 
         // THEN
-        assertTrue(result instanceof LongElement);
-        assertEquals(expectedResult, ((LongElement) result).getValue());
+        assertTrue(result instanceof LongToken);
+        assertEquals(expectedResult, ((LongToken) result).getValue());
     }
 
     @ParameterizedTest
@@ -44,8 +44,8 @@ class ParserTest {
         Object result = cut.parse(new StringReader(input));
 
         // THEN
-        assertTrue(result instanceof DoubleElement);
-        assertEquals(expectedResult, ((DoubleElement) result).getValue());
+        assertTrue(result instanceof DoubleToken);
+        assertEquals(expectedResult, ((DoubleToken) result).getValue());
     }
 
     @ParameterizedTest

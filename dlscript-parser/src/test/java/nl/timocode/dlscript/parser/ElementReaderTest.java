@@ -1,7 +1,6 @@
 package nl.timocode.dlscript.parser;
 
-import nl.timocode.dlscript.parser.primitives.LongElement;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -20,8 +19,8 @@ class ElementReaderTest {
     void read() {
         // GIVEN
         String input = String.join(System.lineSeparator(),
-                "12.34ab cd56 89#{ef",
-                "gh ! @0 123456789()+-*/^");
+                "12.34ab cd1_5$6 89#{ef",
+                "123456789()\"a!@2'\"");
         ElementReader cut = new ElementReader(new StringReader(input));
 
         // WHEN
@@ -30,27 +29,17 @@ class ElementReaderTest {
 
         // THEN
         assertEquals(List.of(
-                new LongElement(12L),
-                new StringElement("."),
-                new LongElement(34L),
-                new StringElement("ab"),
-                new StringElement("cd56"),
-                new LongElement(89L),
-                new StringElement("#"),
-                new StringElement("{"),
-                new StringElement("ef"),
-                new StringElement("gh"),
-                new StringElement("!"),
-                new StringElement("@"),
-                new LongElement(0L),
-                new LongElement(123456789L),
-                new StringElement("("),
-                new StringElement(")"),
-                new StringElement("+"),
-                new StringElement("-"),
-                new StringElement("*"),
-                new StringElement("/"),
-                new StringElement("^")
+                new DoubleToken(12.34),
+                new IdentifierToken("ab"),
+                new IdentifierToken("cd1_5$6"),
+                new LongToken(89),
+                new CharToken('#'),
+                new CharToken('{'),
+                new IdentifierToken("ef"),
+                new LongToken(123456789),
+                new CharToken('('),
+                new CharToken(')'),
+                new StringLiteralToken("a!@2'")
         ), elements);
     }
 
@@ -65,8 +54,8 @@ class ElementReaderTest {
         cut.reset();
 
         // THEN
-        assertEquals(Optional.of(new LongElement(12L)), cut.read());
-        assertEquals(Optional.of(new StringElement("ab")), cut.read());
+        assertEquals(Optional.of(new LongToken(12L)), cut.read());
+        assertEquals(Optional.of(new IdentifierToken("ab")), cut.read());
         assertEquals(Optional.empty(), cut.read());
     }
 

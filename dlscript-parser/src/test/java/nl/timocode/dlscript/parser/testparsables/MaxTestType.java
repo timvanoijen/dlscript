@@ -4,31 +4,32 @@ import lombok.Data;
 import nl.timocode.dlscript.parser.ElementBuilder;
 import nl.timocode.dlscript.parser.Parsable;
 import nl.timocode.dlscript.parser.matchers.*;
-import nl.timocode.dlscript.parser.primitives.DoubleElement;
-import nl.timocode.dlscript.parser.primitives.StringElement;
+import nl.timocode.dlscript.parser.primitives.CharToken;
+import nl.timocode.dlscript.parser.primitives.DoubleToken;
+import nl.timocode.dlscript.parser.primitives.IdentifierToken;
 
-public class MaxTestType implements Parsable<DoubleElement, MaxTestType.Builder> {
+public class MaxTestType implements Parsable<DoubleToken, MaxTestType.Builder> {
 
     @Data
-    public static class Builder implements ElementBuilder<DoubleElement> {
-        private DoubleElement left;
-        private DoubleElement right;
+    public static class Builder implements ElementBuilder<DoubleToken> {
+        private DoubleToken left;
+        private DoubleToken right;
 
         @Override
-        public DoubleElement build() {
-            return new DoubleElement(Math.max(left.getValue(), right.getValue()));
+        public DoubleToken build() {
+            return new DoubleToken(Math.max(left.getValue(), right.getValue()));
         }
     }
 
     @Override
     public PatternMatcher<Builder> patternMatcher() {
         return SequencePatternMatcher.of(
-                ValuePatternMatcher.of(new StringElement("max")),
-                ValuePatternMatcher.of(new StringElement("(")),
-                TypePatternMatcher.of(DoubleElement.class, Builder::setLeft),
-                ValuePatternMatcher.of(new StringElement(",")),
-                TypePatternMatcher.of(DoubleElement.class, Builder::setRight),
-                ValuePatternMatcher.of(new StringElement(")"))
+                ValuePatternMatcher.of(new IdentifierToken("max")),
+                ValuePatternMatcher.of(new CharToken('(')),
+                TypePatternMatcher.of(DoubleToken.class, Builder::setLeft),
+                ValuePatternMatcher.of(new CharToken(',')),
+                TypePatternMatcher.of(DoubleToken.class, Builder::setRight),
+                ValuePatternMatcher.of(new CharToken(')'))
         );
     }
 
